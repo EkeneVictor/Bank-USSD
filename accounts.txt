@@ -1,0 +1,18 @@
+[1m
+	+------------------------------+
+	|      Account Details   JAKEAREE   
+	+------------------------------+
+	| First name: Jake
+	| Last name: Aree
+	| Phone number: 09132449876
+	| User name: JAKEAREE
+	| User ID: BA238WS
+	| Account number: 0024174269
+	| BVN: n
+	| NIN: 39021345987
+	| Account Balance: $500
+	| PIN: 32209
+	| Account Status: Active
+	| Account Type: Business
+[0m
+	+------------------------------+
