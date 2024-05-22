@@ -16,3 +16,93 @@
 	| Account Type: Business
 [0m
 	+------------------------------+
+[1m
+	+------------------------------+
+	|      Account Details   JAKEAREE   
+	+------------------------------+
+	| First name: Jake
+	| Last name: Aree
+	| Phone number: 09087651232
+	| User name: JAKEAREE
+	| User ID: BN385QL
+	| Account number: 0024133022
+	| BVN: 32190843218
+	| NIN: Empty
+	| Account Balance: $500
+	| PIN: 11092
+	| Account Status: Active
+	| Account Type: Business
+[0m
+	+------------------------------+
+[1m
+	+------------------------------+
+	|      Account Details   JAKE AREEFED   
+	+------------------------------+
+	| First name: Jake
+	| Last name: aree
+	| Phone number: Fed
+	| User name: 09158752319
+	| User ID: JAKE
+	| Account number: AREEFED
+	| BVN: ZI097OR
+	| NIN: 0024150610
+	| Account Balance: $23489016423
+	| PIN: Empty
+	| Account Status: 500
+	| Account Type: 99813
+[0m
+	+------------------------------+
+[1m
+	+------------------------------+
+	|      Account Details   JAKEEAREEO   
+	+------------------------------+
+	| First name: Jakee
+	| Last name: Areeo
+	| Phone number: 09128763245
+	| User name: JAKEEAREEO
+	| User ID: WD690FV
+	| Account number: 0024184256
+	| BVN: 02345287165
+	| NIN: Empty
+	| Account Balance: $500
+	| PIN: 12887
+	| Account Status: Active
+	| Account Type: Business
+[0m
+	+------------------------------+
+[1m
+	+------------------------------+
+	|      Account Details   JAKEEAREEO22   
+	+------------------------------+
+	| First name: Jakee
+	| Last name: Areeo
+	| Phone number: 08072437812
+	| User name: JAKEEAREEO22
+	| User ID: MI854DP
+	| Account number: 0024121735
+	| BVN: n
+	| NIN: 21986243568
+	| Account Balance: $500
+	| PIN: 66543
+	| Account Status: Active
+	| Account Type: Business
+[0m
+	+------------------------------+
+[1m
+	+------------------------------+
+	|      Account Details   BOBMARK   
+	+------------------------------+
+	| First name: Bob
+	| Last name: Mark
+	| Phone number: 09123674896
+	| User name: BOBMARK
+	| User ID: AN481YO
+	| Account number: 0024160757
+	| BVN: n
+	| NIN: 32789132456
+	| Account Balance: $50
+	| PIN: 22198
+	| Account Status: Active
+	| Account Type: Savings
+[0m
+	+------------------------------+
