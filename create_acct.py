@@ -79,15 +79,18 @@ def conf_user_name(user_name_inp):
 
 
 def get_user_input(prompt):
+    """function that prompts user for input"""
     return input(prompt)
 
 
 def display_error(message):
+    """function that displays error message"""
     print(txf.red() + message + txf.end())
     time.sleep(1)
 
 
 def handle_no_credentials():
+    """function to handle error for user not inputting credentials"""
     time.sleep(2)
     display_error('Sorry, you cannot register in our bank without the necessary credentials')
     for i in range(1, 6):
@@ -100,6 +103,7 @@ def handle_no_credentials():
 
 
 def validate_input(input_value, length):
+    """Function to validate users input"""
     if input_value.isdigit():
         if len(input_value) == length:
             return True
@@ -111,6 +115,7 @@ def validate_input(input_value, length):
 
 
 def is_valid_phone_number(phone_num):
+    """function to validate phone number input"""
     valid_prefixes = ['070', '071', '080', '081', '090', '091']
     if phone_num.isdigit() and len(phone_num) == 11 and phone_num[:3] in valid_prefixes:
         return True
@@ -137,6 +142,7 @@ def get_account_by_user_and_type(user_name, acct_type):
 
 
 def print_with_delay(text, delay=0.255):
+    """function that simulates text by text typing"""
     for char in text:
         print(char, end='', flush=True)
         time.sleep(delay)
@@ -150,20 +156,21 @@ def check_user_existence_phone_num(phone_num):
 
 
 def check_user_existence_bvn_num(bvn_input):
-    """Check if a user already exists based on the phone_num"""
+    """Check if a user already exists based on the bvn number"""
     query = "SELECT * FROM bank_tbl WHERE bvn_num = %s"
     my_cur.execute(query, (bvn_input,))
     return my_cur.fetchone() is not None
 
 
 def check_user_existence_nin_num(nin_input):
-    """Check if a user already exists based on the phone_num"""
+    """Check if a user already exists based on the nin number"""
     query = "SELECT * FROM bank_tbl WHERE nin_num = %s"
     my_cur.execute(query, (nin_input,))
     return my_cur.fetchone() is not None
 
 
 def print_account_details(split_details):
+    """function to print account details of user"""
     print(
         f'{txf.bold()}\n\t+------------------------------+\n\t'
         f'|      Account Details      '
@@ -185,6 +192,7 @@ def print_account_details(split_details):
 
 
 def write_to_file(split_details, user_name_inp):
+    """function to write accounts created to a file"""
     with open('accounts.txt', 'a') as accts:
         accts.write(
             f'{txf.bold()}\n\t+------------------------------+\n\t'
@@ -202,7 +210,7 @@ def write_to_file(split_details, user_name_inp):
             f'\t| PIN: {split_details[9]}\n'
             f'\t| Account Status: {split_details[10]}\n'
             f'\t| Account Type: {split_details[11]}\n'
-            f'\n\t+------------------------------+\n{txf.end()}'
+            f'\n\t+------------------------------+\n\n{txf.end()}'
         )
 
 
