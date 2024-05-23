@@ -169,3 +169,10 @@ def display_error(message):
     """function that displays error message"""
     print(red() + message + end())
     time.sleep(1)
+
+
+def print_with_delay(text, delay=0.255):
+    """function that simulates text by text typing"""
+    for char in text:
+        print(char, end='', flush=True)
+        time.sleep(delay)

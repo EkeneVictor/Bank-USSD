@@ -1,6 +1,8 @@
 import time
 import pymysql as sql
 import textformatting as txf
+import config
+
 
 # connecting to the mysql server
 conn_obj = sql.connect(
@@ -15,7 +17,8 @@ my_cur = conn_obj.cursor()
 
 
 def retr_user_data(user_name, pin_):
-    """Retrieves user data for admin"""
+    """Retrieves user data"""
+
     time.sleep(2.5)
 
     if user_name and pin_:
@@ -45,6 +48,8 @@ def retrieve_user_data():
 
         if user:
             return user
+        config.user_name = user_name
+        config.pin_ = pin_
     else:
         txf.display_error('You have not logged in')
         return None  # Return None if the user is not logged in

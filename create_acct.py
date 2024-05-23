@@ -64,7 +64,6 @@ def gen_user_name(user_name_inp):
     return user_name_inp
 
 
-# noinspection PyShadowingNames
 # function to confirm username
 def conf_user_name(user_name_inp):
     select_user_names = 'SELECT user_name from bank_tbl'
@@ -150,23 +149,44 @@ def print_with_delay(text, delay=0.255):
 
 def check_user_existence_phone_num(phone_num):
     """Check if a user already exists based on the phone_num"""
-    query = "SELECT * FROM bank_tbl WHERE phone_num = %s"
-    my_cur.execute(query, (phone_num,))
-    return my_cur.fetchone() is not None
+    query = "SELECT phone_num FROM bank_tbl"
+    my_cur.execute(query)
+    all_phone_nums = my_cur.fetchall()
+    all_phone_nums_list = [row[0] for row in all_phone_nums]  # Extracting usernames from the fetched rows
+    if phone_num in all_phone_nums_list:
+        return True
+    else:
+        return False
 
 
 def check_user_existence_bvn_num(bvn_input):
     """Check if a user already exists based on the bvn number"""
-    query = "SELECT * FROM bank_tbl WHERE bvn_num = %s"
-    my_cur.execute(query, (bvn_input,))
-    return my_cur.fetchone() is not None
+    if bvn_input != 'NONE':
+        query = "SELECT bvn_num FROM bank_tbl"
+        my_cur.execute(query)
+        all_bvn_nums = my_cur.fetchall()
+        all_bvn_nums_list = [row[0] for row in all_bvn_nums]  # Extracting usernames from the fetched rows
+        if bvn_input in all_bvn_nums_list:
+            return True
+        else:
+            return False
+    else:
+        return my_cur.fetchone() is None, False
 
 
 def check_user_existence_nin_num(nin_input):
     """Check if a user already exists based on the nin number"""
-    query = "SELECT * FROM bank_tbl WHERE nin_num = %s"
-    my_cur.execute(query, (nin_input,))
-    return my_cur.fetchone() is not None
+    if nin_input != 'NONE':
+        query = "SELECT nin_num FROM bank_tbl"
+        my_cur.execute(query)
+        all_nin_nums = my_cur.fetchall()
+        all_nin_nums_list = [row[0] for row in all_nin_nums]  # Extracting usernames from the fetched rows
+        if nin_input in all_nin_nums_list:
+            return True
+        else:
+            return False
+    else:
+        return my_cur.fetchone() is None, False
 
 
 def print_account_details(split_details):
@@ -187,7 +207,7 @@ def print_account_details(split_details):
         f'\t| PIN: {split_details[9]}\n'
         f'\t| Account Status: {split_details[10]}\n'
         f'\t| Account Type: {split_details[11]}\n'
-        f'\n\t+------------------------------+\n{txf.end()}'
+        f'\t+------------------------------+\n{txf.end()}'
     )
 
 
@@ -210,12 +230,12 @@ def write_to_file(split_details, user_name_inp):
             f'\t| PIN: {split_details[9]}\n'
             f'\t| Account Status: {split_details[10]}\n'
             f'\t| Account Type: {split_details[11]}\n'
-            f'\n\t+------------------------------+\n\n{txf.end()}'
+            f'\t+------------------------------+\n\n{txf.end()}'
         )
 
 
 # function to create account
-nin_input = ''
+nin_input = 'NONE'
 
 
 def create_acct():
@@ -234,11 +254,11 @@ def create_acct():
     user_name_inp = fname.upper() + lname.upper()
     user_name_inp = conf_user_name(user_name_inp)
     while True:
-        bvn_input = get_user_input(txf.bold() + "Enter your BVN [press N if you don't have a BVN]: " + txf.end())
-        if bvn_input.upper() == 'N':
+        bvn_input = get_user_input(txf.bold() + "Enter your BVN [enter NONE if you don't have a BVN]: " + txf.end()).upper()
+        if bvn_input.upper() == 'NONE':
             time.sleep(1)
-            nin_input = get_user_input(txf.bold() + "Enter your NIN [press N if you don't have an NIN]: " + txf.end())
-            if nin_input.upper() == 'N':
+            nin_input = get_user_input(txf.bold() + "Enter your NIN [enter NONE if you don't have an NIN]: " + txf.end()).upper()
+            if nin_input.upper() == 'NONE' and bvn_input == 'NONE':
                 time.sleep(1)
                 handle_no_credentials()
             elif validate_input(nin_input, 11):
@@ -254,20 +274,21 @@ def create_acct():
             time.sleep(1)
             continue
 
-    if check_user_existence_phone_num(phone_num) or check_user_existence_bvn_num(bvn_input) or check_user_existence_nin_num(nin_input) is True:
+    if check_user_existence_phone_num(phone_num) is True or check_user_existence_bvn_num(bvn_input) is True or (check_user_existence_nin_num(nin_input) is True):
+
         # If the user exists, ask for user ID and BVN or NIN
-        user_id = input(txf.bold() + "Enter your User ID: " + txf.end())
+        user_id = input("Enter your User ID: ")
         query = "SELECT * FROM bank_tbl WHERE user_id = %s"
         my_cur.execute(query, (user_id,))
-        name = my_cur.fetchone()[4]
-        if name:
-            time.sleep(1.5)
-            print(txf.italic() + f"\t\tHey {name}, You can't create multiple accounts at the moment. We are still working on it\n\t\t Sorry for the inconvenience" + txf.end())
-        else:
-            time.sleep(2)
-            display_error('Invalid User ID')
+        result = my_cur.fetchone()
 
-        back_to_options_menu()
+        if result:
+            name = result[4]  # Assuming the name is in the 5th column
+            print(
+                f"Hey {name}, You can't create multiple accounts at the moment. We are still working on it. Sorry for the inconvenience.")
+            back_to_options_menu()
+        else:
+            print("Invalid User ID")
     else:
         time.sleep(0.5)
         while True:
@@ -356,6 +377,3 @@ def create_acct():
         time.sleep(1)
 
         back_to_options_menu()
-
-
-create_acct()

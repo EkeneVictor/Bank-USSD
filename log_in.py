@@ -1,10 +1,9 @@
+import config
 import retrieveuserdata as retr
 import time
 import backs
 import textformatting as txf
 import pymysql as sql
-import adminmenu
-import loggedinmenu
 
 # connecting to the mysql server
 conn_obj = sql.connect(
@@ -37,7 +36,7 @@ def logged_in():
             print(f'error :{e}')
 
         time.sleep(2)
-
+        import adminmenu
         adminmenu.admin_menu()
 
     if user_data[12] != 'Admin' and user_data[11] == 'Active':
@@ -45,7 +44,10 @@ def logged_in():
             time.sleep(2.5)
             print(txf.bold() + f"\t\nLogin successful. Welcome, {user_data[4]}!" + txf.end())
             time.sleep(2.5)
+            config.user_name = user_data[4]
+            config.pin_ = user_data[10]
 
+            import loggedinmenu
             loggedinmenu.logged_in_menu()
 
             backs.back_to_options_menu()

@@ -70,5 +70,3 @@ def admin_menu():
         import backs
         backs.back_to_admin_menu()
     time.sleep(2)
-
-admin_menu()

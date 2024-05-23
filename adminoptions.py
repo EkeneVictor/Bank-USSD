@@ -169,7 +169,7 @@ def gen_user_acct_statement():
         for transaction in all_transactions:
             table.add_row(transaction)
 
-        with open('admin_statements.txt', 'a') as acct_statements:
+        with open('admin_statements.txt', 'w') as acct_statements:
             acct_statements.write(f'\n\n\t\t\t\t\t\t\t\tStatement for {user_name_input}\n')
             acct_statements.write(str(table))
             acct_statements.flush()
