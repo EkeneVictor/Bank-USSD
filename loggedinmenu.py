@@ -2,13 +2,17 @@ import time
 import textformatting as txf
 import check_account_details_userside as chck
 import delete_acct_userside as dealloc
+import deposit_money
+import withdraw_money
+import transfer_money
+import gen_acct_stat_user
 import config
 
 
 def logged_in_menu():
     """function that calls a menu if user is logged in"""
     time.sleep(3)
-    print(txf.bold() + '\n\t+------------------------------+----------------------+--------------------------------+')
+    print(txf.bold() + '\n\t    +------------------------------+----------------------+--------------------------------+')
     print('\t\t|    Please choose an option                                                           |')
     print('\t\t+------------------------------+----------------------+--------------------------------+')
     print('\t\t|   1. Check Account details   |   2. Delete Account  |  3.      Deposit Money         |')
@@ -22,7 +26,7 @@ def logged_in_menu():
 
     time.sleep(2)
     while True:
-        cntn = input(': ' + txf.end())
+        cntn = input('>>> ' + txf.end())
         if cntn != '1' and cntn != '2' and cntn != '3' and cntn != '4' and cntn != '5' and cntn != '6' and cntn != '7' and cntn != '8' and cntn != '9' and cntn != '10':
             time.sleep(2)
             continue
@@ -37,32 +41,27 @@ def logged_in_menu():
             time.sleep(1)
             dealloc.delete_account(config.user_name, config.pin_)
             break
-        # elif cntn == '3':
-        #     time.sleep(1)
-        #     deposit_money()
-        #     break
-        # elif cntn == '4':
-        #     time.sleep(1)
-        #     withdraw_money()
-        #     break
-        # elif cntn == '5':
-        #     time.sleep(1)
-        #     global user_name
-        #     global pin_
-        #
-        #     sender_user_name = user_name
-        #     time.sleep(1.5)
-        #     recipient_account = str(input("\n\033[1mEnter recipient's account number: \033[0m"))
-        #     time.sleep(1.5)
-        #     bill = float(input("\n\033[1mEnter the amount to transfer: \033[0m"))
-        #     time.sleep(0.5)
-        #     description = input("\n\033[1mEnter description: \033[0m")
-        #     transfer_money(sender_user_name, pin_, recipient_account, bill, description)
-        #     break
-        # elif cntn == '6':
-        #     time.sleep(4)
-        #     generate_account_statement()
-        #     break
+        elif cntn == '3':
+            time.sleep(1)
+            deposit_money.deposit_money(config.user_name, config.pin_)
+            break
+        elif cntn == '4':
+            time.sleep(1)
+            withdraw_money.withdraw_money(config.user_name, config.pin_)
+            break
+        elif cntn == '5':
+            time.sleep(1.5)
+            recipient_account = str(input("\n\033[1mEnter recipient's account number: \033[0m"))
+            time.sleep(1.5)
+            bill = float(input("\n\033[1mEnter the amount to transfer: \033[0m"))
+            time.sleep(0.5)
+            description = input("\n\033[1mEnter description: \033[0m")
+            transfer_money.transfer_money(config.user_name, config.pin_, recipient_account, bill, description)
+            break
+        elif cntn == '6':
+            time.sleep(4)
+            gen_acct_stat_user.generate_account_statement(config.user_name)
+            break
         # elif cntn == '7':
         #     time.sleep(2)
         #     edit_acct_info()

@@ -67,3 +67,5 @@ def logged_in():
             txf.bold() + txf.yellow() + f'\n\tAccount; {user_data[4]} has been suspended.\n\t\tAccess cannot be granted\n\t\t\tPlease contact the customer service;{txf.italic() + customer_service + txf.end() + txf.end() + txf.end()}')
 
         backs.back_to_options_menu()
+
+logged_in()

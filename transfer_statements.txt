@@ -1,0 +1,7 @@
+Sender: JAKEBIDEN
+Recipient Account: 0024127609
+Amount: $344.75
+Description: redo of healer season 2: [RECIPIENT ACCOUNT SUSPENDED]
+Reason for Failure: [RECIPIENT ACCOUNT SUSPENDED]
+Date/Time: 2024-05-23 14:50:28.084101
+--------------------------------------------
