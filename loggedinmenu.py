@@ -1,6 +1,7 @@
 import time
 import textformatting as txf
 import check_account_details_userside as chck
+import delete_acct_userside as dealloc
 import config
 
 
@@ -32,10 +33,10 @@ def logged_in_menu():
             time.sleep(2)
             chck.check_acct_details(config.user_name, config.pin_)
             break
-        # elif cntn == '2':
-        #     time.sleep(1)
-        #     delete_account()
-        #     break
+        elif cntn == '2':
+            time.sleep(1)
+            dealloc.delete_account(config.user_name, config.pin_)
+            break
         # elif cntn == '3':
         #     time.sleep(1)
         #     deposit_money()

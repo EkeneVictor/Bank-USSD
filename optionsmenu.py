@@ -25,7 +25,7 @@ def options_menu():
         log_in.logged_in()
     elif option == '3':
         time.sleep(0.5)
-        txf.print_with_delay('Exiting...')
+        txf.print_with_delay(txf.italic() + '\n\t\tExiting...\n' + txf.end())
         time.sleep(4)
         exit()
     else:
@@ -39,6 +39,3 @@ def options_menu():
         sys.exit()
 
     exit()
-
-
-options_menu()
