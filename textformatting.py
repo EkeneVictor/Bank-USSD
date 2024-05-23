@@ -158,3 +158,14 @@ def bright_cyan_bg():
 
 def bright_white_bg():
     return '\033[107m'
+
+
+def get_user_input(prompt):
+    """function that prompts user for input"""
+    return input(prompt)
+
+
+def display_error(message):
+    """function that displays error message"""
+    print(red() + message + end())
+    time.sleep(1)
