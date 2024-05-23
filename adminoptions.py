@@ -174,7 +174,7 @@ def gen_user_acct_statement():
             acct_statements.write(str(table))
             acct_statements.flush()
 
-        print('\n\t\033[1mAccount statement generated. \n\tCheck user inbox for statement\033[0m')
+        print(txf.bold() + 'Account statement generated. \n\tCheck user inbox for statement' + txf.end())
     except Exception as e:
         print(f"An error occurred: {e}")
 
@@ -196,15 +196,18 @@ def unblock_user_acct():
 
         check_acct_for_block = "SELECT * FROM bank_tbl WHERE user_name = %s "
         my_cur.execute(check_acct_for_block, user_name_input)
-        user_acct_status = my_cur.fetchone()
-        user_acct_status = str(user_acct_status[11])
+        user_acct = my_cur.fetchone()
 
-        if user_acct_status == 'Active':
-            time.sleep(2)
-            print(txf.bold() + f"{admin} has " + f"{txf.bright_green() + 'unblocked ' + txf.end()}" + f"{user_name_input}'s account successfully" + txf.end())
+        if user_acct:
+            user_acct_status = str(user_acct[11])
+            if user_acct_status == 'Active':
+                time.sleep(2)
+                print(txf.bold() + f"{admin} has " + f"{txf.bright_green() + 'unblocked ' + txf.end()}" + f"{user_name_input}'s account successfully" + txf.end())
+            else:
+                time.sleep(3)
+                txf.display_error('Error...')
         else:
-            time.sleep(3)
-            txf.display_error('Error...')
+            txf.display_error('Account not found')
     except Exception as e:
         print(f'error occurred : {e}')
 
@@ -226,14 +229,17 @@ def resume_user_acct():
 
         check_acct_for_block = "SELECT * FROM bank_tbl WHERE user_name = %s "
         my_cur.execute(check_acct_for_block, (user_name_input,))
-        user_acct_status = my_cur.fetchone()
-        user_acct_status = str(user_acct_status[11])
+        user_acct = my_cur.fetchone()
 
-        if user_acct_status == 'Active':
-            time.sleep(2)
-            print(txf.bold() + f"{admin} has " + f"{txf.bright_green() + 'resumed ' + txf.end()}" + f"{user_name_input}'s account successfully" + txf.end())
+        if user_acct:
+            user_acct_status = str(user_acct[11])
+            if user_acct_status == 'Active':
+                time.sleep(2)
+                print(txf.bold() + f"{admin} has " + f"{txf.bright_green() + 'resumed ' + txf.end()}" + f"{user_name_input}'s account successfully" + txf.end())
+            else:
+                time.sleep(3)
+                txf.display_error('Error...')
         else:
-            time.sleep(3)
-            txf.display_error('Error...')
+            txf.display_error('Account not found')
     except Exception as e:
         print(f'error occurred : {e}')
