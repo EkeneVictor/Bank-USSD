@@ -33,3 +33,25 @@ def back_to_logged_in_menu():
         loggedinmenu.logged_in_menu()
     else:
         sys.exit()
+
+
+def back_to_bill_payment_menu():
+    print("\033[34m\033[1m1. Press # to go back to bills payment menu\n2. Press * to exit\033[0m")
+    bck = input(":")
+    time.sleep(1)
+    if bck == '#':
+        import bills_payment_menu
+        bills_payment_menu.bills_payment_menu()
+    else:
+        sys.exit()
+
+
+def back_to_top_up_menu():
+    print("\033[34m\033[1m1. Press # to go back to top up menu\n2. Press * to exit\033[0m")
+    bck = input(":")
+    time.sleep(1)
+    if bck == '#':
+        from mobile_menu import mobile_top_up_menu
+        mobile_top_up_menu()
+    else:
+        sys.exit()

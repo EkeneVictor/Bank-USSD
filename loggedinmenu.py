@@ -6,6 +6,8 @@ import deposit_money
 import withdraw_money
 import transfer_money
 import gen_acct_stat_user
+import edit_acct_info_user
+import bills_payment_menu
 import config
 
 
@@ -62,10 +64,10 @@ def logged_in_menu():
             time.sleep(4)
             gen_acct_stat_user.generate_account_statement(config.user_name)
             break
-        # elif cntn == '7':
-        #     time.sleep(2)
-        #     edit_acct_info()
-        #     break
+        elif cntn == '7':
+            time.sleep(2)
+            edit_acct_info_user.edit_acct_info(config.user_name, config.pin_)
+            break
         elif cntn == '8':
             time.sleep(3)
             txf.print_with_delay(txf.italic() + '\t\tlogging out...' + txf.end())
@@ -74,10 +76,10 @@ def logged_in_menu():
             import backs
             backs.back_to_options_menu()
             break
-        # elif cntn == '9':
-        #     time.sleep(0.5)
-        #     bills_payment_menu()
-        #     break
+        elif cntn == '9':
+            time.sleep(0.5)
+            bills_payment_menu.bills_payment_menu()
+            break
         # elif cntn == '10':
         #     time.sleep(1.5)
         #     cipher_ai()
