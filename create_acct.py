@@ -124,7 +124,7 @@ def is_valid_phone_number(phone_num):
 def get_account_by_user_and_type(user_name, acct_type):
     """Function to check if user already exists before"""
     query = '''
-        SELECT account_id, user_id, user_name, account_type, balance, created_at
+        SELECT user_id, user_name, account_type, balance, created_at
         FROM accounts
         WHERE user_name = %s AND account_type = %s
         '''
@@ -279,18 +279,19 @@ def create_acct():
     if check_user_existence_phone_num(phone_num) is True or check_user_existence_bvn_num(bvn_input) is True or (check_user_existence_nin_num(nin_input) is True):
 
         # If the user exists, ask for user ID and BVN or NIN
-        user_id = input("Enter your User ID: ")
+        time.sleep(1.5)
+        user_id = input(txf.bold() + "Enter your User ID: " + txf.end())
         query = "SELECT * FROM bank_tbl WHERE user_id = %s"
         my_cur.execute(query, (user_id,))
         result = my_cur.fetchone()
 
         if result:
             name = result[4]  # Assuming the name is in the 5th column
-            print(
-                f"Hey {name}, You can't create multiple accounts at the moment. We are still working on it. Sorry for the inconvenience.")
+            time.sleep(2.5)
+            print(txf.bold() + f"Hey {name}, You can't create multiple accounts at the moment. We are still working on it. Sorry for the inconvenience." + txf.end())
             back_to_options_menu()
         else:
-            print("Invalid User ID")
+            txf.display_error("Invalid User ID")
     else:
         time.sleep(0.5)
         while True:
@@ -306,7 +307,7 @@ def create_acct():
         while True:
             transaction_pin = str(input(txf.bold() + 'Set your 4-digit Transaction PIN: ' + txf.end()))
             if transaction_pin.isdigit() is True:
-                if len(pin_) < 4 or len(pin_) > 4:
+                if len(transaction_pin) < 4 or len(transaction_pin) > 4:
                     continue
                 else:
                     break

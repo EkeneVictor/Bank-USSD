@@ -106,3 +106,42 @@
 	| Account Type: Savings
 [0m
 	+------------------------------+
+[1m
+	+------------------------------+
+	|      Account Details   TREYDAVIS   
+	+------------------------------+
+	| First name: Trey
+	| Last name: Davis
+	| Phone number: 09136065182
+	| User name: TREYDAVIS
+	| User ID: JT254YV
+	| Account number: 0024191639
+	| BVN: 22198231232
+	| NIN: NONE
+	| Account Balance: $500
+	| PIN: 12188
+	| Account Status: Active
+	| Account Type: Business
+	| Transaction PIN: 8811
+	+------------------------------+
+
+[0m[1m
+	+------------------------------+
+	|      Account Details   VICTORJNR   
+	+------------------------------+
+	| First name: Victor
+	| Last name: Jnr
+	| Phone number: 09060343339
+	| User name: VICTORJNR
+	| User ID: XZ302ZA
+	| Account number: 0024141035
+	| BVN: 29049859484
+	| NIN: NONE
+	| Account Balance: $50
+	| PIN: 60702
+	| Account Status: Active
+	| Account Type: Savings
+	| Transaction PIN: 6060
+	+------------------------------+
+
+[0m

@@ -52,9 +52,10 @@ responses = {
 
 def get_response(user_input):
     if 'hey' or 'hi' or 'hello' in user_input:
-        return random.choice(responses.get(user_input.lower(), responses["hi", "hey", "hello", "yo"]))
-
-    return responses.get(user_input.lower(), responses["default"])
+        choice = random.choice(["hi", "hey", "hello", "yo"])
+        return responses.get(choice, responses)
+    else:
+        return responses.get(user_input.lower(), responses["default"])
 
 
 fun_responses = {

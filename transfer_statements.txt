@@ -5,3 +5,10 @@ Description: redo of healer season 2: [RECIPIENT ACCOUNT SUSPENDED]
 Reason for Failure: [RECIPIENT ACCOUNT SUSPENDED]
 Date/Time: 2024-05-23 14:50:28.084101
 --------------------------------------------
+Sender: TREYDAVIS
+Recipient Account: 0024141035
+Amount: $40.0
+Description: dayumm that gyatt: [RECIPIENT ACCOUNT BLOCKED]
+Reason for Failure: [RECIPIENT ACCOUNT BLOCKED]
+Date/Time: 2024-05-24 14:02:22.716765
+--------------------------------------------

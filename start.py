@@ -21,9 +21,9 @@ def start_bank():
 
             if (stop_time - start_time) >= 20:
                 time.sleep(2)
-                txf.display_error('Error...')
+                txf.display_error('\nError...')
                 time.sleep(2)
-                txf.print_with_delay(txf.italic() + 'Timeout' + txf.end())
+                txf.print_with_delay(txf.italic() + '\nTimeout\n\n' + txf.end())
                 time.sleep(1.5)
                 exit()
 
