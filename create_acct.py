@@ -301,6 +301,17 @@ def create_acct():
             else:
                 display_error('Input is not digits')
                 continue
+        while True:
+            transaction_pin = str(input(txf.bold() + 'Set your 4-digit Transaction PIN: ' + txf.end()))
+            if transaction_pin.isdigit() is True:
+                if len(pin_) < 4 or len(pin_) > 4:
+                    continue
+                else:
+                    break
+            else:
+                display_error('Input is not digits')
+                continue
+
         acct_stat = 'Active'
         acct_bal = 0
         time.sleep(0.5)
