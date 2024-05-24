@@ -19,7 +19,7 @@ def start_bank():
 
             stop_time = time.time()
 
-            if (stop_time - start_time) >= 5:
+            if (stop_time - start_time) >= 20:
                 time.sleep(2)
                 txf.display_error('Error...')
                 time.sleep(2)

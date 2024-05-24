@@ -157,4 +157,3 @@ def cipher_ai():
                     print(f"\rCipher: {get_response(user_input)}{' ' * 20}", flush=True)
         except Exception as e:
             print(f' error: {e}')
-

@@ -207,6 +207,7 @@ def print_account_details(split_details):
         f'\t| PIN: {split_details[9]}\n'
         f'\t| Account Status: {split_details[10]}\n'
         f'\t| Account Type: {split_details[11]}\n'
+        f'\t| Transaction PIN: {split_details[12]}\n'
         f'\t+------------------------------+\n{txf.end()}'
     )
 
@@ -230,6 +231,7 @@ def write_to_file(split_details, user_name_inp):
             f'\t| PIN: {split_details[9]}\n'
             f'\t| Account Status: {split_details[10]}\n'
             f'\t| Account Type: {split_details[11]}\n'
+            f'\t| Transaction PIN: {split_details[12]}\n'
             f'\t+------------------------------+\n\n{txf.end()}'
         )
 
@@ -361,6 +363,7 @@ def create_acct():
         temp_list.append(pin_)
         temp_list.append(acct_stat)
         temp_list.append(acct_type)
+        temp_list.append(transaction_pin)
         created_at = datetime.datetime.now()
         details = " ".join(temp_list)
         split_details = details.split(" ")
@@ -374,10 +377,10 @@ def create_acct():
         write_to_file(split_details, user_name_inp)
 
         # SQL Insert query
-        inst_acct_dtls = "INSERT INTO bank_tbl (first_name,last_name,phone_num,user_name,user_id,acct_num,bvn_num,nin_num,acct_bal,PIN,acct_status,acct_type) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        inst_acct_dtls = "INSERT INTO bank_tbl (first_name,last_name,phone_num,user_name,user_id,acct_num,bvn_num,nin_num,acct_bal,PIN,acct_status,acct_type,transaction_pin) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         # Execute the query with user phone_num
         my_cur.execute(inst_acct_dtls,
-                       (fname, lname, phone_num, user_name_inp, user_id, acct_numb, bvn_input, nin_input, acct_bal, pin_, acct_stat, acct_type))
+                       (fname, lname, phone_num, user_name_inp, user_id, acct_numb, bvn_input, nin_input, acct_bal, pin_, acct_stat, acct_type, transaction_pin))
 
         inst_acct_db = "INSERT INTO accounts (user_id,user_name,account_type,balance,created_at) VALUES (%s, %s, %s, %s, %s)"
         my_cur.execute(inst_acct_db, (user_id, user_name_inp, acct_type, acct_bal, created_at))
