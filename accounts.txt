@@ -144,4 +144,23 @@
 	| Transaction PIN: 6060
 	+------------------------------+
 
+[0m[1m
+	+------------------------------+
+	|      Account Details   JOEROGAN   
+	+------------------------------+
+	| First name: Joe
+	| Last name: Rogan
+	| Phone number: 09173530900
+	| User name: JOEROGAN
+	| User ID: MY794QX
+	| Account number: 0024135907
+	| BVN: 11221901212
+	| NIN: NONE
+	| Account Balance: $50
+	| PIN: 12220
+	| Account Status: Active
+	| Account Type: Savings
+	| Transaction PIN: 0190
+	+------------------------------+
+
 [0m

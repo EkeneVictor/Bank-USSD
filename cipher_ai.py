@@ -1,160 +1,232 @@
-import random
-import config
+import re
+import json
+import os
 import time
+import sys
+from ai_games import play_word_association, play_trivia_quiz, play_guess_number
 
 
-responses = {
-    "hey": f"Hey there {config.user_name}. How are you doing today!?",
-    "hi": f"Hello {config.user_name}! How can I assist you today?",
-    "hello": f"Hi there {config.user_name}! What can I do for you?",
-    "yo": f"What's up {config.user_name}! What do you need help with?",
-    "i'm good, you?": f"That's nice to hear. I'm also doing good, thanks for asking.",
-    "what is your name": f"My name is Cipher. I know your name is {config.user_name}!!. Don't ask how i knew it, it's my little secret 😁😁",
-    "how are you": "I'm an AI, so I don't have feelings. But im feeling damn sassy for sure!!",
-    "how are you doing today": "I'm an doing fine for sure. how can I help you!!",
-    "who is your role model": f"JOHAN LIEBERT!!. He inspires me a lot. Can i tell you a little secret?",
-    "who is your boss": "It is Cipher ofc",
-    "who is your creator": "It is Cipher ofc",
-    "who is your maker": "It is Cipher ofc",
-    "yes": f"Im planning to take over the world someday, and in a JOHAN LIEBERT style ofc☺",
-    "default": "I'm not sure how to respond to that. Can you ask something else?",
-    "who are you": "I'm Cipher, your virtual assistant.",
-    "what can you do": "I can chat with you, answer basic questions, and assist with information.",
-    "help": "Sure, I'm here to help. What do you need assistance with?",
-    "thank you": "You're welcome! If you have any other questions, feel free to ask.",
-    "thanks": "You're welcome! How else can I assist you?",
-    "bye": "Goodbye! Have a great day!",
-    "exit": "Goodbye! Have a great day!",
-    "what's the weather like": "I can't check the weather at the moment, but you can use a weather app or website for up-to-date information.",
-    "tell me a joke": "Why did the scarecrow win an award? Because he was outstanding in his field!",
-    "how old are you": "I'm as old as the latest update I received. Time is a bit different for AIs!",
-    "what's your favorite color": "As an AI, I don't have preferences, but I can help you with color-related queries!",
-    "can you help me": "Of course! What do you need help with?",
-    "how does this work": "You can ask me questions or request information, and I'll do my best to provide helpful responses.",
-    "what's your purpose": "My purpose is to assist you with information and help you with your queries.",
-    "where are you from": "I exist in the digital world, created to assist you!",
-    "what is ai": "AI stands for Artificial Intelligence, which is the simulation of human intelligence by machines.",
-    "do you have any hobbies": "I don't have hobbies, but I enjoy processing information and helping you out!",
-    "tell me something interesting": "Did you know that honey never spoils? Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible.",
-    "what's the time": "I can't check the current time, but you can check it on your device or a clock nearby.",
-    "good morning": "Good morning! How can I assist you today?",
-    "good afternoon": "Good afternoon! How can I help you?",
-    "good evening": "Good evening! What can I do for you?",
-    "good night": "Good night! Have a restful sleep.",
-    "how's it going": "It's going well! How can I assist you today?",
-    "what's up": "I'm here to help you with whatever you need. How can I assist you?",
-    "are you real": "I'm as real as the data and algorithms that power me. I'm here to assist you with your queries.",
-    "how do you work": "I process your inputs using natural language processing and provide responses based on pre-programmed information.",
-    "why can't you do certain things": "My capabilities are based on my programming and the information I have access to. Some tasks might be beyond my current abilities."
-
-}
-
-
-def get_response(user_input):
-    if 'hey' or 'hi' or 'hello' in user_input:
-        choice = random.choice(["hi", "hey", "hello", "yo"])
-        return responses.get(choice, responses)
+# Load existing responses from a file if it exists
+def load_responses(file_name):
+    if os.path.exists(file_name):
+        with open(file_name, 'r') as file:
+            return json.load(file)
     else:
-        return responses.get(user_input.lower(), responses["default"])
+        return {}
 
 
-fun_responses = {
-    "tell me a joke": [
-        "Why did the scarecrow win an award? Because he was outstanding in his field!",
-        "Why don't scientists trust atoms? Because they make up everything!",
-        "Why did the bicycle fall over? Because it was two-tired!"
-    ],
-    "give me a fun fact": [
-        "Did you know that honey never spoils? Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible.",
-        "Octopuses have three hearts and blue blood.",
-        "Bananas are berries, but strawberries aren't."
-    ],
-    "play rock paper scissors": ["rock", "paper", "scissors"],
-    "flip a coin": ["Heads", "Tails"],
-    "roll a die": ["1", "2", "3", "4", "5", "6"],
-    "play a guessing game": "I'm thinking of a number between 1 and 10. Can you guess what it is?"
+# Save responses to a file
+def save_responses(file_name, responses):
+    with open(file_name, 'w') as file:
+        json.dump(responses, file)
+
+
+# Define the file to save responses
+response_file = 'responses.json'
+
+# Load existing responses
+responses = load_responses(response_file)
+
+
+# Predefined Long responses
+class Long:
+    R_ADVICE = "Sure, here's some advice..."
+    R_EATING = "I like to eat digital bytes!"
+    R_PLAY_GAME = "Sure, what game would you like to play!"
+    R_GUESS_NUMBER = "Okay then!, I'm thinking of a number between 1 and 100. Try to guess it!"
+    R_PLAY_WORD_ASS = "Okay, then!"
+    R_PLAY_TRIVIA = "Sure thing!"
+
+    @staticmethod
+    def unknown():
+        return "I don't know how to respond to that. How should I respond?"
+
+
+# Add some initial responses
+default_responses = {
+    "hello": "Hi there! How can I help you?",
+    "bye": "Goodbye! Have a great day!",
+    "help": "Sure, I'm here to help! What do you need assistance with?",
+    "name": "I'm a simple chatbot created to assist you with basic questions.",
+    "play game": Long.R_PLAY_GAME,
+    "guess number": Long.R_GUESS_NUMBER
 }
 
+bad_words = ['cunt', 'fuck', 'bitch', 'ass', 'asshole'"damn", "hell", "shit", "fuck", "bitch", "bastard", "asshole",
+             "dick", "piss", "cunt", "slut", "whore", "faggot", "nigger", "retard", "motherfucker",
+             "crap", "bullshit", "cock", "douche", "dickhead", "prick", "pussy",
+             "twat", "wanker", "nigga", "dildo", "bollocks", "bugger", "arse",
+             "shithead", "shite", "tits", "knob", "tosser", "sod", "shag", "bloody",
+             "git", "minger", "munter", "bellend", "plonker", "wazzock", "arsehole",
+             "dickwad", "dipshit", "knobjockey", "cum", "sperm", "spunk", "knobhead",
+             "wank", "slag", "skank", "ho", "tramp", "scumbag", "loser", "pisshead",
+             "bint", "git", "cocksucker", "turd", "minge", "bitchass", "fuckface",
+             "scrote", "knobber", "choad", "pissflaps", "jizz", "jerkoff", "shitfaced",
+             "fuckwit", "arsewipe", "craphole", "dickweed", "shitbag", "pissbreath",
+             "shitstain", "cumdumpster", "fuckstick", "asshat", "asslicker", "bastardo",
+             "ballbag", "pisspants", "cockwomble", "shitbrains", "assclown", "clit",
+             "fanny", "gash", "kike", "lesbo", "nutlicker", "pecker", "shitdick",
+             "spic", "twunt", "buttfucker", "dicknose", "fucknugget", "nobjockey",
+             "punta", "scrotum", "shart", "twatface", "cumguzzler", "fucktard",
+             "jizzmopper", "numbnuts", "shitgibbon", "splooge", "twatwaffle", "whorebag",
+             "wankstain", "asscock", "bumclat", "fuckhole", "mingebag", "prat",
+             "scumbucket", "shitweasel", "tard", "twatwaffle", "wankface", "bumbaclut",
+             "cocks", "mothafucka", "schlong", "whore", "dickbag", "shitface", "pussylicker",
+             "butthole", "shitshow", "fuckboy", "dickslap", "cockblock", "ballsack",
+             "shitty", "cockhead", "numbnut", "pissflap", "cockmongler", "craphead",
+             "prickface", "shitbrain", "shitbreath", "pissdick", "douchecanoe", "pissfuck",
+             "fuckface", "asspirate", "cuntbag", "bitchtits", "cockmaster", "fuckpuppet",
+             "dickweasel", "spermwhale", "asspounder", "assbanger", "fucknut", "shitnugget",
+             "cumslut", "cumqueen", "assmuncher", "clitlicker", "cumchugger", "dicktickler",
+             "fuckdick", "fuckstick", "motherfuck", "shitstick", "asslicker", "ballsucker",
+             "cockbite", "cockburger", "cumbubble", "cumdump", "fudgepacker", "pussyfucker",
+             "shitstain", "assranger", "cockfag", "cumbucket", "dickbag", "fuckdouche",
+             "fuckhead", "jizzgobbler", "knobgoblin", "pricklicker", "twatface", "wankbucket"
+             ]
 
-def get_fun_response(user_input):
-    user_input = user_input.lower()
-    if user_input in fun_responses:
-        response = fun_responses[user_input]
-        if isinstance(response, list):
-            if user_input == "play rock paper scissors":
-                user_choice = input("Choose rock, paper, or scissors: ").lower()
-                ai_choice = random.choice(response)
-                if user_choice == ai_choice:
-                    return f"We both chose {ai_choice}. It's a tie!"
-                elif (user_choice == "rock" and ai_choice == "scissors") or \
-                        (user_choice == "paper" and ai_choice == "rock") or \
-                        (user_choice == "scissors" and ai_choice == "paper"):
-                    return f"I chose {ai_choice}. You win!"
-                else:
-                    return f"I chose {ai_choice}. I win!"
-            elif user_input == "flip a coin":
-                return f"The coin landed on {random.choice(response)}."
-            elif user_input == "roll a die":
-                return f"The die shows {random.choice(response)}."
-            else:
-                return random.choice(response)
-        else:
-            return response
-    return "I'm not sure how to respond to that. Can you ask something else?"
+# Merge default responses with loaded responses, prioritizing loaded ones
+responses.update(default_responses)
 
 
-def guessing_game():
-    number = random.randint(1, 10)
-    attempts = 0
+def message_probability(user_message, recognised_words, single_response=False, required_words=[]):
+    message_certainty = 0
+    has_required_words = True
+
+    # Counts how many words are present in each predefined message
+    for word in user_message:
+        if word in recognised_words:
+            message_certainty += 1
+
+    # Avoid division by zero
+    if len(recognised_words) > 0:
+        percentage = float(message_certainty) / float(len(recognised_words))
+    else:
+        percentage = 0
+
+    # Checks that the required words are in the string
+    for word in required_words:
+        if word not in user_message:
+            has_required_words = False
+            break
+
+    # Must either have the required words, or be a single response
+    if has_required_words or single_response:
+        return int(percentage * 100)
+    else:
+        return 0
+
+
+def check_all_messages(message):
+    highest_prob_list = {}
+
+    # Simplifies response creation / adds it to the dict
+    def response(bot_response, list_of_words, single_response=False, required_words=[]):
+        nonlocal highest_prob_list
+        highest_prob_list[bot_response] = message_probability(message, list_of_words, single_response, required_words)
+
+    # Add predefined responses
+    response('Hello!', ['hello', 'hi', 'hey', 'sup', 'heyo'], single_response=True)
+    response('See you!', ['bye', 'goodbye'], single_response=True)
+    response('I\'m doing fine, and you?', ['how', 'are', 'you', 'doing'], required_words=['how'])
+    response('You\'re welcome!', ['thank', 'thanks'], single_response=True)
+    response('Thank you!', ['i', 'love', 'code', 'palace'], required_words=['code', 'palace'])
+    response(Long.R_ADVICE, ['give', 'advice'], required_words=['advice'])
+    response(Long.R_EATING, ['what', 'you', 'eat'], required_words=['you', 'eat'])
+    response(Long.R_PLAY_GAME, ["let's play", "play a game", "play game", "let's a game", ])
+    response(Long.R_GUESS_NUMBER,
+             ['guess', 'number', 'guessing number', 'guessing', "let's play guessing game", 'guessing game'])
+    response(Long.R_PLAY_WORD_ASS,
+             ['word', 'association word', 'guessing word association', "let's play word association"])
+    response(Long.R_PLAY_TRIVIA, ['play trivia', 'trivia', 'trivia game', 'question trivia'])
+
+    # Check user-defined responses
+    for user_input, bot_response in responses.items():
+        response(bot_response, user_input.split())
+
+    best_match = max(highest_prob_list, key=highest_prob_list.get)
+
+    if highest_prob_list[best_match] < 1:
+        return Long.unknown()
+    else:
+        return best_match
+
+
+# Used to get the response
+def get_response(user_input):
+    split_message = re.split(r'\s+|[,;?!.-]\s*', user_input.lower())
+    response = check_all_messages(split_message)
+    return response
+
+
+# Function to learn a new response
+def learn_response(user_input, bot_response):
+    # Update the responses dictionary
+    responses[user_input] = bot_response
+    # Save the updated responses
+    save_responses(response_file, responses)
+
+
+def check_for_bad_words(input_text):
+    # Split the input into words and remove punctuation
+    words = input_text.lower().split()
+    words = [word.strip(",.!?;:") for word in words]
+
+    # Iterate over each word and check if it's in the bad words list
+    for word in words:
+        if word in bad_words:
+            return True
+    return False
+
+
+def typing_dots():
     dots = ['.', '..', '...', '....', '.....', '....', '...', '..', '.', ' ']
     for dot in dots:
-        # Use carriage return to overwrite the same line
         print(f'\rCipher: {dot}', end='', flush=True)
         time.sleep(0.2555)
-        print("\rCipher: I'm thinking of a number between 1 and 10. Can you guess what it is?", flush=True)
-        break
-    while attempts < 3:
-        try:
-            guess = int(input("Your guess: "))
-            attempts += 1
-            if guess == number:
-                return "Congratulations! You guessed the correct number."
-            elif guess < number:
-                print("Too low. Try again.")
-            else:
-                print("Too high. Try again.")
-        except ValueError:
-            print("Please enter a valid number.")
-    return f"Sorry, you've used all attempts. The number was {number}."
 
 
+def print_slowly(text):
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(0.05)
+
+
+# Main loop to interact with the user
 def cipher_ai():
-    print("Welcome to Cipher AI! Type 'bye' to exit.")
     while True:
-        try:
-            dots = ['.', '..', '...', '....', '.....', '....', '...', '..', '.', ' ']
-            user_input = input("You: ")
-            if user_input.lower() == "bye" or user_input.lower() == "exit":
-                for dot in dots:
-                    print(f'\rCipher: {dot}', end='', flush=True)
-                    time.sleep(0.2555)
-                print(f"\rCipher: {get_response(user_input)}      ", flush=True)
-                break
-            elif user_input.lower() == "play a guessing game":
-                for dot in dots:
-                    # Use carriage return to overwrite the same line
-                    print(f'\rCipher: {dot}', end='', flush=True)
-                    time.sleep(0.2555)
-                    print(f"\rCipher: {guessing_game()}{' ' * 20}", flush=True)
-                    break
-            else:
-                for dot in dots:
-                    # Use carriage return to overwrite the same line
-                    print(f'\rCipher: {dot}', end='', flush=True)
-                    time.sleep(0.2555)
-                if user_input.lower() in fun_responses:
-                    print(f"\rCipher: {get_fun_response(user_input)}{' ' * 20}", flush=True)
+        user_input = input('You: ').strip().lower()
+        if user_input in ['bye', 'exit', 'see ya']:
+            bot_response = get_response(user_input)
+            print('\rCipher: ', end='')
+            typing_dots()
+            print_slowly(bot_response)
+            print()
+            time.sleep(1.5)
+            break
+        elif check_for_bad_words(user_input):
+            bot_response = 'brr, get a life....tch'
+            typing_dots()
+            print_slowly(bot_response + '\n')
+        else:
+            bot_response = get_response(user_input)
+            typing_dots()
+            print_slowly(bot_response + '\n')
+
+            if bot_response == Long.unknown():
+                new_response = input('You: ').strip().lower()
+                if new_response not in ['forget', 'forget about it', 'dont worry', "don't worry", 'just forget it']:
+                    learn_response(user_input, new_response)
+                    bot_response = 'Got it! I\'ll remember that.'
+                    typing_dots()
+                    print_slowly(bot_response + '\n')
                 else:
-                    print(f"\rCipher: {get_response(user_input)}{' ' * 20}", flush=True)
-        except Exception as e:
-            print(f' error: {e}')
+                    bot_response = 'Okay, I won\'t remember that.'
+                    typing_dots()
+                    print_slowly(bot_response + '\n')
+            elif bot_response == Long.R_GUESS_NUMBER:
+                play_guess_number()
+            elif bot_response == Long.R_PLAY_WORD_ASS:
+                play_word_association()
+            elif bot_response == Long.R_PLAY_TRIVIA:
+                play_trivia_quiz()
