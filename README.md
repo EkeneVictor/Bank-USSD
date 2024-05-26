@@ -2,23 +2,27 @@
 
 ## Features
 
-- **User Authentication**: Users can log in to their accounts using a combination of a phone number and PIN.
-- **Account Balance**: Users can check their account balance.
+- **User Authentication**: Users can log in to their accounts using a combination of a username and PIN. while verification of BVN and NIN is also done behind the scenes
+- **Account Details**: Users can check their account details.
 - **Transfer Funds**: Users can transfer funds between accounts.
+- **Withdraw Money**: Users are able to withdraw money from their accounts.
+- **Deposit Money**: Users are able to deposit money into their accounts
 - **Airtime Top-up**: Users can recharge their mobile phone airtime.
 - **Bill Payments**: Users can pay bills such as electricity, water, and TV subscriptions.
 - **Transaction History**: Users can view their transaction history.
+- **Generate Statements**: Users can generatevand view their account statements within any specified date range .
+- **Edit Info**: Users can edit their info such as first and last names, pins and mobile number in case of any mistakes during registration or updating of details.
+- **Cipher AI**: Cipher; a fun AI (more of a chatbot) that users can interact it. It features an algorithm that learns from users input, it also has fun mini-games user can interact with
 
 ## Installation
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/bank-ussd-project.git
+   git clone https://github.com/EkeneVictor/bank-ussd-project.git
 
 2. Install dependencies:
 
    ```bash
-   Copy code
    pip install -r requirements.txt
 
 3. Set up the database:
@@ -29,25 +33,22 @@
 4. Run the application:
 
    ```bash
-   Copy code
-      python app.py
+      python main.py
 ## Usage
 Dial the USSD code on your mobile phone.
 Follow the prompts to navigate through the menu options.
 Perform banking transactions as desired.
-Technologies Used
+
+## Technologies Used
 Python: Programming language used for backend development.
-Flask: Web framework used for building the USSD application.
 MySQL: Relational database management system used for data storage.
-HTML/CSS: Frontend technologies used for styling the USSD interface.
-Contributing
+
+- Contributing:
 Contributions are welcome! Please feel free to fork the repository, make improvements, and submit pull requests. For major changes, please open an issue first to discuss what you would like to change.
 
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
+## License
+This project is licensed under the NHS License - see the LICENSE file for details.
 
-Acknowledgements
-OpenAI for providing AI-powered chat functionality.
-Flask for the web framework.
+## Acknowledgements
 MySQL for the database management system.
 Python for the programming language.
