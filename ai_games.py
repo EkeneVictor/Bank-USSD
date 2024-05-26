@@ -114,7 +114,6 @@ def play_trivia_quiz():
             "options": ["A. Earth", "B. Mars", "C. Mercury", "D. Venus"],
             "answer": "C"
         },
-        # Add more questions as needed
     ]
 
     # Game loop
@@ -129,7 +128,7 @@ def play_trivia_quiz():
             print_slowly(bot_response + '\n')
             # print(option)
 
-        user_input = input("Your answer: ").upper()
+        user_input = input("You: ").upper()
 
         if user_input == q["answer"]:
             bot_response = "Correct"

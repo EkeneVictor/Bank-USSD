@@ -19,13 +19,13 @@ my_cur = conn_obj.cursor()
 def edit_acct_info(user_name, pin):
     try:
         time.sleep(1)
-        print(txf.bold() + '\n\t\t\t\t+------------------------------+-------------------------+-------------------------+')
+        print(txf.bold() + '\n\t\t\t\t+------------------------------+---------------------------+-------------------------+')
         print('\t\t\t\t|    Please choose an option                                                       |')
-        print('\t\t\t\t+------------------------------+-------------------------+-------------------------+')
-        print('\t\t\t\t|   1.    Change First name    |   2. Change Last name   | 3. Change Phone number  |')
-        print('\t\t\t\t+------------------------------+-------------------------+-------------------------+')
-        print('\t\t\t\t|   4.    Change Pin           |   5.       Exit         |                         |')
-        print('\t\t\t\t+------------------------------+-------------------------+-------------------------+')
+        print('\t\t\t\t+------------------------------+---------------------------+-------------------------+')
+        print('\t\t\t\t|   1.    Change First name    | 2.   Change Last name     | 3. Change Phone number  |')
+        print('\t\t\t\t+------------------------------+---------------------------+-------------------------+')
+        print('\t\t\t\t|   4.    Change Pin           | 5. Change Transaction PIN | 6.        Exit          |')
+        print('\t\t\t\t+------------------------------+---------------------------+-------------------------+')
 
         time.sleep(0.5)
         inp = input('>>> ' + txf.end())
@@ -161,6 +161,28 @@ def edit_acct_info(user_name, pin):
                 time.sleep(1)
                 print('\n\t\t\033[31mNew PIN is not digits\033[0m')
         elif inp == '5':
+            time.sleep(2)
+            print('\n\t\033[1mEnter your new Transaction PIN\033[0m')
+            time.sleep(0.5)
+            new_pin_digit = input('\t\t\033[1m : \033[0m')
+
+            if new_pin_digit.isdigit():
+                if len(new_pin_digit) == 4:
+                    new_pin = str(new_pin_digit)
+                    update_pin_query = "UPDATE bank_tbl SET transaction_pin = %s WHERE user_name = %s AND PIN = %s"
+                    my_cur.execute(update_pin_query, (new_pin, user_name, pin))
+                    conn_obj.commit()
+                    time.sleep(2)
+                    txf.print_with_delay('changing...')
+                    time.sleep(2)
+                    print('\n\t\t\t\033[3mTransaction PIN updated successfully\033[0m')
+                else:
+                    time.sleep(1)
+                    print('\n\t\t\t\033[31mNew PIN has to be 5 digits\033[0m')
+            else:
+                time.sleep(1)
+                print('\n\t\t\033[31mNew PIN is not digits\033[0m')
+        elif inp == '6':
             time.sleep(1.5)
             txf.print_with_delay(txf.italic() + '\n\tExiting...' + txf.end())
             time.sleep(1)

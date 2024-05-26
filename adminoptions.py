@@ -41,6 +41,7 @@ def check_acct_details_for_user():
                 f'\t| PIN: {user_data[10]}\n'
                 f'\t| Account Status: {user_data[11]}\n'
                 f'\t| Account Type: {user_data[12]}\n'
+                f'\t| Transaction PIN: {user_data[13]}\n'
                 f'\t+------------------------------+\n{txf.end()}'
             )
         else:

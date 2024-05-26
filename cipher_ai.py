@@ -1,9 +1,11 @@
+import random
 import re
 import json
 import os
 import time
-from utilities import typing_dots,print_slowly
+from utilities import typing_dots, print_slowly
 from ai_games import play_word_association, play_trivia_quiz, play_guess_number
+import config
 
 
 # Load existing responses from a file if it exists
@@ -44,7 +46,7 @@ class Long:
 
 # Add some initial responses
 default_responses = {
-    "hello": "Hi there! How can I help you?",
+    "hello": f"Hi there {config.user_name}! How can I help you?",
     "bye": "Goodbye! Have a great day!",
     "help": "Sure, I'm here to help! What do you need assistance with?",
     "name": "I'm a simple chatbot created to assist you with basic questions.",
@@ -52,7 +54,7 @@ default_responses = {
     "guess number": Long.R_GUESS_NUMBER
 }
 
-bad_words = ['cunt', 'fuck', 'bitch', 'ass', 'asshole'"damn", "hell", "shit", "fuck", "bitch", "bastard", "asshole",
+bad_words = ['cunt', 'fuck', 'fucking', 'bitch', 'ass', 'asshole'"damn", "hell", "shit", "fuck", "bitch", "bastard", "asshole",
              "dick", "piss", "cunt", "slut", "whore", "faggot", "nigger", "retard", "motherfucker",
              "crap", "bullshit", "cock", "douche", "dickhead", "prick", "pussy",
              "twat", "wanker", "nigga", "dildo", "bollocks", "bugger", "arse",
@@ -191,7 +193,7 @@ def cipher_ai():
             time.sleep(1.5)
             break
         elif check_for_bad_words(user_input):
-            bot_response = 'brr, get a life....tch'
+            bot_response = random.choice(['brr, get a life....tch', "don't try to teach me corrupt data, I'm not dumb", 'you really should get a life...', 'may the lord be with you.....', ])
             typing_dots()
             print_slowly(bot_response + '\n')
         else:
@@ -201,7 +203,7 @@ def cipher_ai():
 
             if bot_response == Long.unknown():
                 new_response = input('You: ').strip().lower()
-                if new_response not in ['forget', 'forget about it', 'dont worry', "don't worry", 'just forget it']:
+                if new_response not in ['forget', 'forget about it', 'dont worry', "don't worry", "don't about it worry", "dont about it worry", 'just forget it']:
                     learn_response(user_input, new_response)
                     bot_response = 'Got it! I\'ll remember that.'
                     typing_dots()
@@ -216,4 +218,3 @@ def cipher_ai():
                 play_word_association()
             elif bot_response == Long.R_PLAY_TRIVIA:
                 play_trivia_quiz()
-

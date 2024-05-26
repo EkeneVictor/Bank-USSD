@@ -201,4 +201,23 @@
 	| Transaction PIN: 2133
 	+------------------------------+
 
+[0m[1m
+	+------------------------------+
+	|      Account Details   CIPHERMOB   
+	+------------------------------+
+	| First name: Cipher
+	| Last name: Mob
+	| Phone number: 08035387968
+	| User name: CIPHERMOB
+	| User ID: HL475QJ
+	| Account number: 0024175642
+	| BVN: NONE
+	| NIN: 34356178293
+	| Account Balance: $50
+	| PIN: 12337
+	| Account Status: Active
+	| Account Type: Savings
+	| Transaction PIN: 5460
+	+------------------------------+
+
 [0m
