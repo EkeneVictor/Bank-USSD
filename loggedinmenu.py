@@ -8,7 +8,6 @@ import transfer_money
 import gen_acct_stat_user
 import edit_acct_info_user
 import bills_payment_menu
-import cipher_ai
 import config
 
 
@@ -82,8 +81,9 @@ def logged_in_menu():
             bills_payment_menu.bills_payment_menu()
             break
         elif cntn == '10':
+            from cipher_ai import cipher_ai
             time.sleep(1.5)
-            cipher_ai.cipher_ai()
+            cipher_ai()
             break
         else:
             print("\n\033[31mInvalid option. Please choose again.\033[0m")

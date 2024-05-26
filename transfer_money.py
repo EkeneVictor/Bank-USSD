@@ -67,7 +67,7 @@ def transfer_money(user_name, pin, recipient_account, amount, description):
             sender_balance = my_cur.fetchone()[0]
             if sender_balance:
                 if sender_balance >= amount:
-                    if reciever and reciever[9] == 'Active':
+                    if reciever and reciever[11] == 'Active':
                         # Calculate charges
                         charges = 0.015 * amount
                         amount_tr = amount + charges
@@ -224,7 +224,6 @@ def transfer_money(user_name, pin, recipient_account, amount, description):
                             reciever[4], datetime.now(), description, sender_acct_type,
                             reciever_acct_type, 'Failed'))
                         conn_obj.commit()
-
                     else:
                         print("\n\033[31mRecipient account not found.\033[0m")
                 else:

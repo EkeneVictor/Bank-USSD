@@ -163,4 +163,42 @@
 	| Transaction PIN: 0190
 	+------------------------------+
 
+[0m[1m
+	+------------------------------+
+	|      Account Details   BRYANJOHNSON   
+	+------------------------------+
+	| First name: Bryan
+	| Last name: Johnson
+	| Phone number: 09173530802
+	| User name: BRYANJOHNSON
+	| User ID: CU529PW
+	| Account number: 0024138087
+	| BVN: NONE
+	| NIN: 21124536721
+	| Account Balance: $0
+	| PIN: 12901
+	| Account Status: Active
+	| Account Type: Student
+	| Transaction PIN: 5422
+	+------------------------------+
+
+[0m[1m
+	+------------------------------+
+	|      Account Details   BRUCEWAYNE   
+	+------------------------------+
+	| First name: Bruce
+	| Last name: Wayne
+	| Phone number: 08171123091
+	| User name: BRUCEWAYNE
+	| User ID: QL938SU
+	| Account number: 0024135943
+	| BVN: NONE
+	| NIN: 12129901827
+	| Account Balance: $500
+	| PIN: 11200
+	| Account Status: Active
+	| Account Type: Business
+	| Transaction PIN: 2133
+	+------------------------------+
+
 [0m

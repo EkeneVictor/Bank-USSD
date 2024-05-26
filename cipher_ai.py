@@ -2,7 +2,7 @@ import re
 import json
 import os
 import time
-import sys
+from utilities import typing_dots,print_slowly
 from ai_games import play_word_association, play_trivia_quiz, play_guess_number
 
 
@@ -178,20 +178,6 @@ def check_for_bad_words(input_text):
     return False
 
 
-def typing_dots():
-    dots = ['.', '..', '...', '....', '.....', '....', '...', '..', '.', ' ']
-    for dot in dots:
-        print(f'\rCipher: {dot}', end='', flush=True)
-        time.sleep(0.2555)
-
-
-def print_slowly(text):
-    for char in text:
-        sys.stdout.write(char)
-        sys.stdout.flush()
-        time.sleep(0.05)
-
-
 # Main loop to interact with the user
 def cipher_ai():
     while True:
@@ -230,3 +216,4 @@ def cipher_ai():
                 play_word_association()
             elif bot_response == Long.R_PLAY_TRIVIA:
                 play_trivia_quiz()
+

@@ -1,5 +1,5 @@
 import random
-from cipher_ai import typing_dots, print_slowly
+from utilities import typing_dots, print_slowly
 
 
 # Function for the "Guess the Number" game
