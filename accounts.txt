@@ -220,4 +220,60 @@
 	| Transaction PIN: 5460
 	+------------------------------+
 
+[0m[1m
+	+------------------------------+
+	|      Account Details   JOEBIDEN   
+	+------------------------------+
+	| First name: Joe
+	| Last name: Biden
+	| Phone number: 08173530802
+	| User name: JOEBIDEN
+	| User ID: OD749AY
+	| Account number: 0024178431
+	| BVN: NONE
+	| NIN: 32289102983
+	| Account Balance: $500
+	| PIN: 32209
+	| Account Status: Active
+	| Account Type: Business
+	| Transaction PIN: 2131
+	+------------------------------+
+
+[0m[1m
+	+------------------------------+
+	|      Account Details   JOEBIDEN   
+	+------------------------------+
+	| First name: Joe
+	| Last name: Biden
+	| Phone number: 08173530802
+	| User name: JOEBIDEN
+	| User ID: OD749AY
+	| Account number: 0024148379
+	| BVN: NONE
+	| NIN: 32289102983
+	| Account Balance: $50
+	| PIN: 56990
+	| Account Status: Active
+	| Account Type: Savings
+	| Transaction PIN: 3211
+	+------------------------------+
+
 [0m
+	+------------------------------+
+	|      Account Details   RAYBART   
+	+------------------------------+
+	| First name: Ray
+	| Last name: Bart
+	| Phone number: 09032298720
+	| User name: RAYBART
+	| User ID: OF852WM
+	| Account number: 0024165793
+	| BVN: 22309121102
+	| NIN: NONE
+	| Account Balance: $50
+	| PIN: 67390
+	| Account Status: Active
+	| Account Type: Savings
+	| Transaction PIN: 2302
+	+------------------------------+
+
