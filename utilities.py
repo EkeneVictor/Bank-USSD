@@ -2,7 +2,6 @@ import time
 import sys
 
 
-
 def typing_dots():
     dots = ['.', '..', '...', '....', '.....', '....', '...', '..', '.', ' ']
     for dot in dots:
@@ -15,4 +14,3 @@ def print_slowly(text):
         sys.stdout.write(char)
         sys.stdout.flush()
         time.sleep(0.05)
-

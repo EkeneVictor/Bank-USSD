@@ -35,15 +35,11 @@ def start_bank():
 
             else:
                 time.sleep(2)
-                print('\t\t\t\t\t\t\t\t\t\t\t\t\t+~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~+')
-                print('\t\t\t\t\t\t\t\t\t\t\t\t\t||-----------------------------------------||')
                 print('\t\t\t\t\t\t\t\t\t\t\t\t\t|| \033[1m\033[7m Welcome To our USSD Banking service...\033[0m ||')
-                print('\t\t\t\t\t\t\t\t\t\t\t\t\t||_________________________________________||\n')
 
                 time.sleep(2)
-                print("\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t||+------------------------------+||")
                 print(
-                    "\t\t\t\t\t\t\t\t\t\t\t\t\t\t||\033[1m\033[3m     How may we help you\033[0m        ||\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t||+------------------------------+||\n")
+                    "\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\033[1m\033[3m        How may we help you\033[0m    ")
                 time.sleep(1.5)
                 options_menu()
                 exit()

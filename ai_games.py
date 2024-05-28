@@ -8,7 +8,7 @@ def play_guess_number():
     attempts = 0
 
     while True:
-        guess = input("Your guess: ")
+        guess = input("You: ")
         attempts += 1
 
         try:
@@ -71,18 +71,23 @@ def play_word_association():
             typing_dots()
             print_slowly(bot_response + '\n')
 
-        # Ask if the user wants to continue playing
-        bot_response = "Do you want to continue?; (yes/no):"
-        typing_dots()
-        print_slowly(bot_response + '\n')
-        play_again = input("You: ").lower()
-        if play_again != 'yes':
+        # statement that lets the user stop the game
+        if user_input == 'stop':
             break
 
     # Display final score
     bot_response = f"Your final score is: {score}"
     typing_dots()
     print_slowly(bot_response + '\n')
+
+    if score < 50:
+        bot_response = f"You're pretty dumb, no offense😂😂"
+        typing_dots()
+        print_slowly(bot_response + '\n')
+    else:
+        bot_response = f"Congrats, you're smarter than most"
+        typing_dots()
+        print_slowly(bot_response + '\n')
 
 
 def play_trivia_quiz():

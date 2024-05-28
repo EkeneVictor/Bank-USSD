@@ -43,13 +43,13 @@ def gen_acct_num():
 def conf_acct_type(acct_type):
     """Method to confirm account type"""
     if acct_type == 'Savings':
-        print('\033[3m\tYou have opened a Savings account\033[0m')
+        # print('\033[3m\tYou have opened a Savings account\033[0m')
         return 'Savings'
     elif acct_type == 'Business':
-        print('\033[3m\tYou have opened a Business account\033[0m')
+        # print('\033[3m\tYou have opened a Business account\033[0m')
         return 'Business'
     elif acct_type == 'Student':
-        print("\033[3m\tYou have opened a Student's account\033[0m")
+        # print("\033[3m\tYou have opened a Student's account\033[0m")
         return "Student"
     else:
         return 'Invalid Input'
@@ -216,7 +216,7 @@ def write_to_file(split_details, user_name_inp):
     """function to write accounts created to a file"""
     with open('accounts.txt', 'a') as accts:
         accts.write(
-            f'{txf.bold()}\n\t+------------------------------+\n\t'
+            f'\n\t+------------------------------+\n\t'
             f'|      Account Details   {user_name_inp}   '
             f'\n\t+------------------------------+\n'
             f'\t| First name: {split_details[0]}\n'
@@ -232,7 +232,7 @@ def write_to_file(split_details, user_name_inp):
             f'\t| Account Status: {split_details[10]}\n'
             f'\t| Account Type: {split_details[11]}\n'
             f'\t| Transaction PIN: {split_details[12]}\n'
-            f'\t+------------------------------+\n\n{txf.end()}'
+            f'\t+------------------------------+\n\n'
         )
 
 
@@ -240,10 +240,163 @@ def write_to_file(split_details, user_name_inp):
 nin_input = 'NONE'
 
 
+def create_acct_v2(user_id):
+    """Function to create account"""
+    global nin_input
+    print(txf.bold() + '*Fill in your details below to open another account\n' + txf.end())
+    time.sleep(1.5)
+    # creating empty list that acts as temporary storage
+    temp_list = []
+    # collect first and last name inputs
+    select_fname = "SELECT first_name FROM bank_tbl WHERE user_id = %s"
+    my_cur.execute(select_fname, user_id)
+    fname = str(my_cur.fetchone()[0])
+    # fname = input(txf.bold() + "Enter your first name: " + txf.end()).capitalize()
+    time.sleep(0.5)
+    select_lname = "SELECT last_name FROM bank_tbl WHERE user_id = %s"
+    my_cur.execute(select_lname, user_id)
+    lname = str(my_cur.fetchone()[0])
+    # lname = input(txf.bold() + "Enter your last name: " + txf.end()).capitalize()
+    time.sleep(0.5)
+    # generate username is username already exists in the db
+    user_name_inp = fname.upper() + lname.upper()
+    bvn_input_sel = "SELECT bvn_num FROM bank_tbl WHERE user_id = %s"
+    my_cur.execute(bvn_input_sel, user_id)
+    bvn_input = my_cur.fetchone()[0]
+    nin_input_sel = "SELECT nin_num FROM bank_tbl WHERE user_id = %s"
+    my_cur.execute(nin_input_sel, user_id)
+    nin_input = my_cur.fetchone()[0]
+    phone_input_sel = "SELECT phone_num FROM bank_tbl WHERE user_id = %s"
+    my_cur.execute(phone_input_sel, user_id)
+    phone_num = my_cur.fetchone()[0]
+    # user_name_inp = conf_user_name(user_name_inp)
+    # while True:
+    #     bvn_input = get_user_input(
+    #         txf.bold() + "Enter your BVN [enter NONE if you don't have a BVN]: " + txf.end()).upper()
+    #     if bvn_input.upper() == 'NONE':
+    #         time.sleep(1)
+    #         nin_input = get_user_input(
+    #             txf.bold() + "Enter your NIN [enter NONE if you don't have an NIN]: " + txf.end()).upper()
+    #         if nin_input.upper() == 'NONE' and bvn_input == 'NONE':
+    #             time.sleep(1)
+    #             handle_no_credentials()
+    #         elif validate_input(nin_input, 11):
+    #             break  # Valid NIN, exit the loop
+    #     elif validate_input(bvn_input, 11):
+    #         break  # Valid BVN, exit the loop
+    # while True:
+    #     phone_num = get_user_input((txf.bold() + 'Enter your phone number: ' + txf.end()))
+    #     if is_valid_phone_number(phone_num):
+    #         break
+    #     else:
+    #         display_error("Invalid phone number. Please try again.")
+    #         time.sleep(1)
+    #         continue
+    # time.sleep(0.5)
+    while True:
+        pin_ = str(input(txf.bold() + 'Set your 5-digit PIN: ' + txf.end()))
+        if pin_.isdigit() is True:
+            if len(pin_) < 5 or len(pin_) > 5:
+                continue
+            else:
+                break
+        else:
+            display_error('Input is not digits')
+            continue
+    while True:
+        transaction_pin = str(input(txf.bold() + 'Set your 4-digit Transaction PIN: ' + txf.end()))
+        if transaction_pin.isdigit() is True:
+            if len(transaction_pin) < 4 or len(transaction_pin) > 4:
+                continue
+            else:
+                break
+        else:
+            display_error('Input is not digits')
+            continue
+    acct_stat = 'Active'
+    acct_bal = 0
+    time.sleep(0.5)
+    while True:
+        acct_type_inp = input(
+            txf.bold() + "Choose an account type [Savings,Business,Student]: " + txf.end()).capitalize()
+        acct_type = conf_acct_type(acct_type_inp)
+        if acct_type == 'Invalid Input':
+            continue
+
+        existing_account = get_account_by_user_and_type(user_name_inp, acct_type)
+
+        if existing_account:
+            print(f"\033[31mError\033[0m: User {user_name_inp} already has a {acct_type} account.\n\tPlease choose another account type.")
+            time.sleep(2)
+            back_to_options_menu()
+        else:
+            break
+    if acct_type == 'Savings':
+        acct_bal = 50
+    elif acct_type == 'Business':
+        acct_bal = 500
+    elif acct_type == 'Student':
+        acct_bal = 0
+    time.sleep(0.5)
+    gen_acct_num()
+    temp_list.append(fname)
+    temp_list.append(lname)
+    temp_list.append(phone_num)
+    temp_list.append(user_name_inp)
+    temp_list.append(user_id)
+    acct_numb = gen_acct_num()
+    temp_list.append(acct_numb)
+
+    if bvn_input:
+        temp_list.append(bvn_input)
+    else:
+        temp_list.append('Empty')
+
+    if nin_input:
+        temp_list.append(nin_input)
+    else:
+        temp_list.append('Empty')
+    temp_list.append(str(acct_bal))
+    temp_list.append(pin_)
+    temp_list.append(acct_stat)
+    temp_list.append(acct_type)
+    temp_list.append(transaction_pin)
+    created_at = datetime.datetime.now()
+    details = " ".join(temp_list)
+    split_details = details.split(" ")
+    # print(split_details)
+    print_with_delay(txf.italic() + "\t\tCreating Account...")
+    time.sleep(2)
+    print("\n\t\tYour account has been created successfully" + txf.end())
+
+    time.sleep(2)
+    print_account_details(split_details)
+    write_to_file(split_details, user_name_inp)
+
+    # SQL Insert query
+    inst_acct_dtls = "INSERT INTO bank_tbl (first_name,last_name,phone_num,user_name,user_id,acct_num,bvn_num,nin_num,acct_bal,PIN,acct_status,acct_type,transaction_pin) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    # Execute the query with user phone_num
+    my_cur.execute(inst_acct_dtls,
+                   (fname, lname, phone_num, user_name_inp, user_id, acct_numb, bvn_input, nin_input, acct_bal, pin_,
+                    acct_stat, acct_type, transaction_pin))
+
+    inst_acct_db = "INSERT INTO accounts (user_id,user_name,account_type,balance,created_at) VALUES (%s, %s, %s, %s, %s)"
+    my_cur.execute(inst_acct_db, (user_id, user_name_inp, acct_type, acct_bal, created_at))
+
+    conn_obj.commit()
+    # my_cur.close()
+    # conn_obj.close()
+    time.sleep(1)
+
+    back_to_options_menu()
+# except Exception as e:
+#     print(f'error: {e}')
+
+
 def create_acct():
     """Function to create account"""
     global nin_input
-    print(txf.bold() + '*Fill in your details below to open your account\n' + txf.end())
+    print(txf.bold() + '*Fill in your details below to open an oaccount\n' + txf.end())
     time.sleep(1.5)
     # creating empty list that acts as temporary storage
     temp_list = []
@@ -286,9 +439,22 @@ def create_acct():
         result = my_cur.fetchone()
 
         if result:
-            name = result[4]  # Assuming the name is in the 5th column
+            name = result[4]
             time.sleep(2.5)
-            print(txf.bold() + f"Hey {name}, You can't create multiple accounts at the moment. We are still working on it. Sorry for the inconvenience." + txf.end())
+            print(txf.bold() + f"Hey {name}, Welcome Back!" + txf.end())
+            time.sleep(2)
+            # select_accts = "SELECT * FROM accounts WHERE user_id = %s"
+            # my_cur.execute(select_accts, user_id)
+            # accts = my_cur.fetchall()
+            # first_acct = accts[0]
+            # second_acct = accts[1]
+            # third_acct = accts[2]
+            # print(first_acct[2])
+            # print(second_acct[2])
+            # print(third_acct[2])
+
+            create_acct_v2(user_id)
+
             back_to_options_menu()
         else:
             txf.display_error("Invalid User ID")
