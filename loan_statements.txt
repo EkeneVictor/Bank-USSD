@@ -34,3 +34,9 @@ Amount: $100000.0
 Description: Loan Disbursement
 Date/Time: 2024-05-30 01:51:25.651621
 --------------------------------------------
+Transaction ID: UKBO3721DQBE9FM45206BQ
+User: BRYANJOHNSON
+Amount: $20000.0
+Description: Loan Disbursement
+Date/Time: 2024-05-30 07:34:37.654918
+--------------------------------------------

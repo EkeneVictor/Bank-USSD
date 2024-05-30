@@ -279,8 +279,8 @@ def process_due_loans():
 
                 # Update the outstanding balance of the loan
                 new_balance = outstanding_balance - repayment_amount
-                update_loan_query = "UPDATE loans_tbl SET outstanding_balance = %s, last_repayment_date = %s WHERE transaction_id = %s"
-                my_cur.execute(update_loan_query, (new_balance, datetime.now(), transaction_id))
+                update_loan_query = "UPDATE loans_tbl SET outstanding_balance = %s WHERE transaction_id = %s"
+                my_cur.execute(update_loan_query, (new_balance, transaction_id))
 
                 # Update the balance of admin account
                 update_admin_query = "UPDATE bank_tbl SET acct_bal = acct_bal + %s WHERE user_name = %s"
@@ -295,7 +295,7 @@ def process_due_loans():
                 my_cur.execute(reciever_acct_type_query, (sender_acct,))
                 sender_acct_type = my_cur.fetchone()[0]
 
-                # Update sender acounts table
+                # Update sender accounts table
                 update_accounts_query = "UPDATE accounts SET balance = balance - %s WHERE user_name = %s and account_type = %s"
                 my_cur.execute(update_accounts_query, (repayment_amount, user_name, sender_acct_type))
                 conn_obj.commit()

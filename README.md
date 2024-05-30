@@ -10,7 +10,8 @@
 - **Airtime Top-up**: Users can recharge their mobile phone airtime.
 - **Bill Payments**: Users can pay bills such as electricity, water, and TV subscriptions.
 - **Transaction History**: Users can view their transaction history.
-- **Generate Statements**: Users can generatevand view their account statements within any specified date range .
+- **Loans**: Users can request loans from the bank.
+- **Generate Statements**: Users can generate and view their account statements within any specified date range .
 - **Edit Info**: Users can edit their info such as first and last names, pins and mobile number in case of any mistakes during registration or updating of details.
 - **Cipher AI**: Cipher; a fun AI (more of a chatbot) that users can interact it. It features an algorithm that learns from users input, it also has fun mini-games user can interact with
 
