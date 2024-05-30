@@ -30,7 +30,7 @@ class AccountRestrictions:
         self.max_loan = max_loan
 
 
-# Define restrictions for each account type
+# Defining restrictions for each account type
 savings_restrictions = AccountRestrictions(
     min_balance=50, max_balance=100000, max_withdrawal=2000, max_deposit=10000,
     interest_rate=1.5, transfer_limit=1000, max_loan=0)
