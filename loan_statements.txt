@@ -1,0 +1,36 @@
+Transaction ID: PBUVMIS6W7PWG57NBU4F8E
+User: TREYDAVIS
+Amount: $2000.0
+Description: Loan Disbursement
+Date/Time: 2024-05-28 20:25:24.960845
+--------------------------------------------
+Transaction ID: S3KWWSH3C6O9O7LQAWT8GM
+User: TREYDAVIS
+Amount: $1500.0
+Description: Loan Disbursement
+Date/Time: 2024-05-28 22:14:45.698899
+--------------------------------------------
+Transaction ID: KD8GS6P9S4BZUP8AVUZ2X5
+User: TREYDAVIS
+Amount: $5000.0
+Description: Loan Disbursement
+Date/Time: 2024-05-29 12:14:37.018549
+--------------------------------------------
+Transaction ID: BNNVVYVFZSDUB996KL0FOL
+User: TREYDAVIS
+Amount: $500.0
+Description: Loan Disbursement
+Date/Time: 2024-05-29 12:25:21.144009
+--------------------------------------------
+Transaction ID: 26YWDMH4HFFM03R3G4AFBO
+User: BRYANJOHNSON
+Amount: $100000.0
+Description: Loan Disbursement
+Date/Time: 2024-05-30 01:44:06.820423
+--------------------------------------------
+Transaction ID: WQ9A64PJKCEZP50PGGOAVX
+User: BRYANJOHNSON
+Amount: $100000.0
+Description: Loan Disbursement
+Date/Time: 2024-05-30 01:51:25.651621
+--------------------------------------------

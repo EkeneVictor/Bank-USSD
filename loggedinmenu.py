@@ -23,13 +23,13 @@ def logged_in_menu():
     print('\t\t+------------------------------+----------------------+--------------------------------+')
     print('\t\t|   7.   Edit Account Info     |   8.   Log  out      |  9.      Bills   payment       |')
     print('\t\t+------------------------------+----------------------+--------------------------------+')
-    print('\t\t|   10.  Chat with Cipher AI   |                      |                                |')
+    print('\t\t|   10.  Chat with Cipher AI   |   11.   Loan Menu    |                                |')
     print('\t\t+------------------------------+----------------------+--------------------------------+')
 
     time.sleep(2)
     while True:
         cntn = input('>>> ' + txf.end())
-        if cntn != '1' and cntn != '2' and cntn != '3' and cntn != '4' and cntn != '5' and cntn != '6' and cntn != '7' and cntn != '8' and cntn != '9' and cntn != '10':
+        if cntn != '1' and cntn != '2' and cntn != '3' and cntn != '4' and cntn != '5' and cntn != '6' and cntn != '7' and cntn != '8' and cntn != '9' and cntn != '10' and cntn != '11':
             time.sleep(2)
             continue
         else:
@@ -84,6 +84,11 @@ def logged_in_menu():
             from cipher_ai import cipher_ai
             time.sleep(1.5)
             cipher_ai()
+            break
+        elif cntn == '11':
+            from loan_money import loan_menu
+            time.sleep(2)
+            loan_menu(config.user_name)
             break
         else:
             print("\n\033[31mInvalid option. Please choose again.\033[0m")

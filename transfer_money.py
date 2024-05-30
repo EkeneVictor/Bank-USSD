@@ -4,6 +4,7 @@ import textformatting as txf
 import string
 import random
 from datetime import datetime
+from create_acct import check_restrictions
 
 # connecting to the mysql server
 conn_obj = sql.connect(
@@ -48,11 +49,17 @@ def log_transaction_failed(sender_user_name, recipient_account, amount, descript
 def transfer_money(user_name, pin, recipient_account, amount, description):
     try:
         trans_pin_input = input('Enter your transaction PIN: ')
-        check_pin_query = "SELECT transaction_pin FROM bank_tbl WHERE user_name = %s and PIN = %s"
+        check_pin_query = "SELECT transaction_pin, acct_type FROM bank_tbl WHERE user_name = %s and PIN = %s"
         my_cur.execute(check_pin_query, (user_name, pin))
-        trans_pin = my_cur.fetchone()[0]
-        if trans_pin_input == trans_pin:
-            time.sleep(2)
+        result = my_cur.fetchone()
+        if result:
+            trans_pin, acct_type = result
+            if trans_pin_input == trans_pin:
+                # Check the restrictions before proceeding
+                status, message = check_restrictions(acct_type, 'transfer', amount)
+                if not status:
+                    print(message)
+                    return
 
             # Retrieve sender's account details
             sender_user_name = user_name
@@ -124,6 +131,21 @@ def transfer_money(user_name, pin, recipient_account, amount, description):
                             reciever_acct_type_query = "SELECT acct_type FROM bank_tbl WHERE acct_num = %s"
                             my_cur.execute(reciever_acct_type_query, (recipient_account,))
                             reciever_acct_type = my_cur.fetchone()[0]
+
+                            # Update recipient acounts table
+                            update_accounts_query = "UPDATE bank_tbl SET acct_bal = acct_bal + %s WHERE user_name = %s and acct_type = %s"
+                            my_cur.execute(update_accounts_query, (amount, reciever[4], reciever_acct_type))
+                            conn_obj.commit()
+
+                            # Update sender acounts table
+                            update_accounts_query = "UPDATE accounts SET balance = balance - %s WHERE user_name = %s and account_type = %s"
+                            my_cur.execute(update_accounts_query, (amount, sender_user_name, sender_acct_type))
+                            conn_obj.commit()
+
+                            # Update sender acounts table
+                            update_accounts_query = "UPDATE accounts SET balance = balance + %s WHERE user_name = %s and account_type = %s"
+                            my_cur.execute(update_accounts_query, (amount, reciever[4], reciever_acct_type))
+                            conn_obj.commit()
 
                             # Insert transaction record directly into the database
                             update_trans_table = "INSERT INTO transaction_tbl (transaction_id,transaction_amount,sender_acct_num,reciever_acct_num,sender_user_name,reciever_user_name,transaction_date_time,description,sender_acct_type,reciever_acct_type,transaction_status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s)"

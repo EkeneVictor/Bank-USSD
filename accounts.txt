@@ -277,3 +277,60 @@
 	| Transaction PIN: 2302
 	+------------------------------+
 
+
+	+------------------------------+
+	|      Account Details   HARYBART   
+	+------------------------------+
+	| First name: Hary
+	| Last name: Bart
+	| Phone number: 09012837432
+	| User name: HARYBART
+	| User ID: XO133PY
+	| Account number: 0024193579
+	| BVN: 23322901921
+	| NIN: NONE
+	| Account Balance: $0
+	| PIN: 32991
+	| Account Status: Active
+	| Account Type: Invalid
+	| Transaction PIN: ID
+	+------------------------------+
+
+
+	+------------------------------+
+	|      Account Details   JOBRYAN   
+	+------------------------------+
+	| First name: Job
+	| Last name: Ryan
+	| Phone number: 08012345399
+	| User name: JOBRYAN
+	| User ID: EJ865JJ
+	| Account number: 0024196596
+	| BVN: 23321092134
+	| NIN: NONE
+	| Account Balance: $0
+	| PIN: 09211
+	| Account Status: Active
+	| Account Type: Invalid
+	| Transaction PIN: age
+	+------------------------------+
+
+
+	+------------------------------+
+	|      Account Details   ROBMUTT   
+	+------------------------------+
+	| First name: Rob
+	| Last name: Mutt
+	| Phone number: 09028891239
+	| User name: ROBMUTT
+	| User ID: UR075CW
+	| Account number: 0024146505
+	| BVN: 23901921221
+	| NIN: NONE
+	| Account Balance: $0
+	| PIN: 32339
+	| Account Status: Active
+	| Account Type: Student
+	| Transaction PIN: 0009
+	+------------------------------+
+

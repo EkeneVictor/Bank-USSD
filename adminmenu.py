@@ -24,14 +24,14 @@ def admin_menu():
     print('\t+-----------------------------+-----------------------------+--------------------------------+')
     print('\t|   4.  Suspend user account  |  5. Unblock  user  account  |   6.   Resume user account     |')
     print('\t+-----------------------------+-----------------------------+--------------------------------+')
-    print(f'\t|  7. Generate user Statement |   8.     Log   out          |   9.      {txf.italic() + txf.yellow() + 'coming  soon' + txf.end() + txf.end()}         |')
+    print('\t|  7. Generate user Statement |   8.     Log   out          |   9.    Process due loans      |')
     print('\t+-----------------------------+-----------------------------+--------------------------------+' + txf.end())
 
     while True:
 
         cntn = input(txf.bold() + '>>> ' + txf.end())
 
-        if cntn != '1' and cntn != '2' and cntn != '3' and cntn != '4' and cntn != '5' and cntn != '6' and cntn != '7' and cntn != '8':
+        if cntn != '1' and cntn != '2' and cntn != '3' and cntn != '4' and cntn != '5' and cntn != '6' and cntn != '7' and cntn != '8' and cntn != '9':
             time.sleep(2)
             txf.display_error('Invalid input. Please try again.')
             continue
@@ -64,6 +64,9 @@ def admin_menu():
                 print("\n\tLogged out successfully." + txf.end())
                 import backs
                 backs.back_to_options_menu()
+            elif cntn == '9':
+                time.sleep(2)
+                adminoptions.process_due_loans()
             else:
                 txf.display_error('Invalid option. Please choose again.')
                 continue

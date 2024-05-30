@@ -4,6 +4,7 @@ import textformatting as txf
 import string
 import random
 from datetime import datetime
+from create_acct import check_restrictions
 
 # connecting to the mysql server
 conn_obj = sql.connect(
@@ -27,10 +28,17 @@ def withdraw_money(user_name, pin):
         # time.sleep(1.5)
         amount = float(input('\n\033[1mEnter amount to withdraw: \033[1m'))
         trans_pin_input = input('Enter your transaction PIN: ')
-        check_pin_query = "SELECT transaction_pin FROM bank_tbl WHERE user_name = %s and PIN = %s"
+        check_pin_query = "SELECT transaction_pin, acct_type FROM bank_tbl WHERE user_name = %s and PIN = %s"
         my_cur.execute(check_pin_query, (user_name, pin))
-        trans_pin = my_cur.fetchone()[0]
-        if trans_pin_input == trans_pin:
+        result = my_cur.fetchone()
+        if result:
+            trans_pin, acct_type = result
+            if trans_pin_input == trans_pin:
+                # Check the restrictions before proceeding
+                status, message = check_restrictions(acct_type, 'withdrawal', amount)
+                if not status:
+                    print(message)
+                    return
             charges = 0.015 * amount
             amount_bnk = amount + charges
             amount_wtd = amount + charges
@@ -112,6 +120,11 @@ def withdraw_money(user_name, pin):
                     # my_cur.execute(reciever_acct_type_query, (recipient_account,))
                     # reciever_acct_type = my_cur.fetchone()
                     reciever_acct_type = 'WITHDRAWAL'
+
+                    # Update sender acounts table
+                    update_accounts_query = "UPDATE accounts SET balance = balance - %s WHERE user_name = %s and account_type = %s"
+                    my_cur.execute(update_accounts_query, (amount, sender_user_name, sender_acct_type))
+                    conn_obj.commit()
 
                     update_trans_table = "INSERT INTO transaction_tbl (transaction_id,transaction_amount,sender_acct_num,reciever_acct_num,sender_user_name,reciever_user_name,transaction_date_time,description,sender_acct_type,reciever_acct_type,transaction_status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s)"
                     my_cur.execute(update_trans_table, (

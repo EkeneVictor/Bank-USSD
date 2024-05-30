@@ -4,6 +4,7 @@ import textformatting as txf
 import string
 import random
 from datetime import datetime
+from create_acct import handle_transaction, check_restrictions
 
 # connecting to the mysql server
 conn_obj = sql.connect(
@@ -26,10 +27,18 @@ def deposit_money(user_name, pin):
     # time.sleep(1.5)
     amount = float(input('\n\033[1mEnter amount to deposit: \033[0m'))
     trans_pin_input = input('Enter your transaction PIN: ')
-    check_pin_query = "SELECT transaction_pin FROM bank_tbl WHERE user_name = %s and PIN = %s"
+
+    check_pin_query = "SELECT transaction_pin, acct_type FROM bank_tbl WHERE user_name = %s and PIN = %s"
     my_cur.execute(check_pin_query, (user_name, pin))
-    trans_pin = my_cur.fetchone()[0]
-    if trans_pin_input == trans_pin:
+    result = my_cur.fetchone()
+    if result:
+        trans_pin, acct_type = result
+        if trans_pin_input == trans_pin:
+            # Check the restrictions before proceeding
+            status, message = check_restrictions(acct_type, 'deposit', amount)
+            if not status:
+                print(message)
+                return
         charges = 0.015 * amount
         amount_dep = amount - charges
 
@@ -45,7 +54,6 @@ def deposit_money(user_name, pin):
                 # Update the user's account balance in the database with the new balance
                 update_admin_acct_bal = "UPDATE bank_tbl SET acct_bal = %s WHERE acct_type = %s"
                 my_cur.execute(update_admin_acct_bal, (new_balance, acct_type))
-                conn_obj.commit()
 
         # Query the database to retrieve the current balance of the user's account
         select_acc_bal = "SELECT acct_bal FROM bank_tbl WHERE user_name = %s AND PIN = %s "
@@ -59,7 +67,6 @@ def deposit_money(user_name, pin):
                 # Update the user's account balance in the database with the new balance
                 update_acct_bal = "UPDATE bank_tbl SET acct_bal = %s WHERE user_name = %s AND PIN = %s"
                 my_cur.execute(update_acct_bal, (new_balance, user_name, pin))
-                conn_obj.commit()
                 txf.print_with_delay('..........')
                 time.sleep(2)
                 print(
@@ -108,10 +115,17 @@ def deposit_money(user_name, pin):
                 # reciever_acct_type = my_cur.fetchone()
                 reciever_acct_type = 'DEPOSIT'
 
+                # Update sender acounts table
+                update_accounts_query = "UPDATE accounts SET balance = balance + %s WHERE user_name = %s and account_type = %s"
+                my_cur.execute(update_accounts_query, (amount_dep, reciever_user_name, reciever_acct_type))
+
                 update_trans_table = "INSERT INTO transaction_tbl (transaction_id,transaction_amount,sender_acct_num,reciever_acct_num,sender_user_name,reciever_user_name,transaction_date_time,description,sender_acct_type,reciever_acct_type,transaction_status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s)"
                 my_cur.execute(update_trans_table, (
                     transaction_id, trans_amount, sender_acct_num, reciever_acct_num, sender_user_name,
                     reciever_user_name, trans_date, trans_desc, sender_acct_type, reciever_acct_type, trans_status))
+
+                handle_transaction(acct_type, 'deposit', amount)
+
                 conn_obj.commit()
 
             else:

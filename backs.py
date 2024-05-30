@@ -1,5 +1,6 @@
 import time
 import sys
+import config
 
 
 def back_to_options_menu():
@@ -42,6 +43,17 @@ def back_to_bill_payment_menu():
     if bck == '#':
         import bills_payment_menu
         bills_payment_menu.bills_payment_menu()
+    else:
+        sys.exit()
+
+
+def back_to_loan_menu():
+    print("\033[34m\033[1m1. Press # to go back to loan menu\n2. Press * to exit\033[0m")
+    bck = input(":")
+    time.sleep(1)
+    if bck == '#':
+        import loan_money
+        loan_money.loan_menu(config.user_name)
     else:
         sys.exit()
 

@@ -244,3 +244,94 @@ def resume_user_acct():
             txf.display_error('Account not found')
     except Exception as e:
         print(f'error occurred : {e}')
+
+
+def process_due_loans():
+    try:
+        # Fetch loans that are past due and still have outstanding balances
+        due_loans_query = """
+        SELECT transaction_id, user_name, outstanding_balance, monthly_installment, due_date 
+        FROM loans_tbl 
+        WHERE status = 'Approved' AND repayment_status = 'Pending' AND due_date < NOW()
+        """
+        my_cur.execute(due_loans_query)
+        due_loans = my_cur.fetchall()
+
+        if not due_loans:
+            print("No due loans found.")
+            return
+
+        for loan in due_loans:
+            transaction_id, user_name, outstanding_balance, monthly_installment, due_date = loan
+
+            # Fetch user's account balance
+            check_balance_query = "SELECT acct_bal FROM bank_tbl WHERE user_name = %s"
+            my_cur.execute(check_balance_query, (user_name,))
+            user_balance = my_cur.fetchone()[0]
+
+            # Determine the repayment amount
+            repayment_amount = min(monthly_installment, outstanding_balance)
+
+            if user_balance >= repayment_amount:
+                # Deduct the repayment amount from the user's account balance
+                update_balance_query = "UPDATE bank_tbl SET acct_bal = acct_bal - %s WHERE user_name = %s"
+                my_cur.execute(update_balance_query, (repayment_amount, user_name))
+
+                # Update the outstanding balance of the loan
+                new_balance = outstanding_balance - repayment_amount
+                update_loan_query = "UPDATE loans_tbl SET outstanding_balance = %s, last_repayment_date = %s WHERE transaction_id = %s"
+                my_cur.execute(update_loan_query, (new_balance, datetime.now(), transaction_id))
+
+                # Update the balance of admin account
+                update_admin_query = "UPDATE bank_tbl SET acct_bal = acct_bal + %s WHERE user_name = %s"
+                my_cur.execute(update_admin_query, (repayment_amount, 'BANKADMIN'))
+
+                select_recipient_acct = "SELECT acct_num FROM bank_tbl WHERE user_name = %s"
+                my_cur.execute(select_recipient_acct, user_name)
+                sender_acct = my_cur.fetchone()[0]
+
+                # Get recipient's account type
+                reciever_acct_type_query = "SELECT acct_type FROM bank_tbl WHERE acct_num = %s"
+                my_cur.execute(reciever_acct_type_query, (sender_acct,))
+                sender_acct_type = my_cur.fetchone()[0]
+
+                # Update sender acounts table
+                update_accounts_query = "UPDATE accounts SET balance = balance - %s WHERE user_name = %s and account_type = %s"
+                my_cur.execute(update_accounts_query, (repayment_amount, user_name, sender_acct_type))
+                conn_obj.commit()
+
+                recipient_acct = 'LOAN REPAYMENT'
+                rec_user_name = 'LOAN REPAYMENT'
+                description = f'REPAYMENT OF ${repayment_amount} LOAN'
+                rec_acct_type = 'LOAN REPAYMENT'
+
+                # log the loan repayment into transaction table
+                update_trans_table = "INSERT INTO transaction_tbl (transaction_id,transaction_amount,sender_acct_num,reciever_acct_num,sender_user_name,reciever_user_name,transaction_date_time,description,sender_acct_type,reciever_acct_type,transaction_status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s)"
+                my_cur.execute(update_trans_table, (
+                    transaction_id, repayment_amount, sender_acct, recipient_acct, user_name,
+                    rec_user_name, datetime.now(), description, sender_acct_type,
+                    rec_acct_type, 'Successful'))
+                conn_obj.commit()
+
+                # Insert the repayment record into loan_repayments_tbl
+                insert_repayment_query = """
+                INSERT INTO loan_repayments_tbl (loan_id, user_name, amount, payment_date, status)
+                VALUES (%s, %s, %s, %s, %s)
+                """
+                my_cur.execute(insert_repayment_query, (transaction_id, user_name, repayment_amount, datetime.now(), 'Paid'))
+
+                # If the loan is fully repaid, update the loan status
+                if new_balance == 0:
+                    update_loan_status_query = "UPDATE loans_tbl SET repayment_status = 'Paid' WHERE transaction_id = %s"
+                    my_cur.execute(update_loan_status_query, (transaction_id,))
+
+                print(f"Processed repayment for user {user_name}, loan {transaction_id}. New balance: {new_balance}")
+
+            else:
+                print(f"Insufficient funds for user {user_name} to repay loan {transaction_id}.")
+
+        # Commit all changes to the database
+        conn_obj.commit()
+
+    except Exception as e:
+        print(f"An error occurred while processing due loans: {e}")
