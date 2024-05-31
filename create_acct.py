@@ -439,7 +439,7 @@ def create_acct_v2(user_id):
     time.sleep(0.5)
     while True:
         acct_type_inp = input(
-            txf.bold() + "Choose an account type [Savings,Business,Student]: " + txf.end()).capitalize()
+            txf.bold() + "Choose an account type [Savings,Business,Student,Current]: " + txf.end()).capitalize()
         acct_type = conf_acct_type(acct_type_inp)
         if acct_type == 'Invalid Input':
             continue

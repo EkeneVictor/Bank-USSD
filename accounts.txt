@@ -334,3 +334,60 @@
 	| Transaction PIN: 0009
 	+------------------------------+
 
+
+	+------------------------------+
+	|      Account Details   FARAHJINN   
+	+------------------------------+
+	| First name: Farah
+	| Last name: Jinn
+	| Phone number: 07039801221
+	| User name: FARAHJINN
+	| User ID: EE611IC
+	| Account number: 0024150606
+	| BVN: NONE
+	| NIN: 32289182183
+	| Account Balance: $100
+	| PIN: 87349
+	| Account Status: Active
+	| Account Type: Current
+	| Transaction PIN: 9341
+	+------------------------------+
+
+
+	+------------------------------+
+	|      Account Details   TOBIOWOEYE   
+	+------------------------------+
+	| First name: Tobi
+	| Last name: Owoeye
+	| Phone number: 09168375876
+	| User name: TOBIOWOEYE
+	| User ID: VB829DF
+	| Account number: 0024134134
+	| BVN: 23546846243
+	| NIN: NONE
+	| Account Balance: $50
+	| PIN: 15151
+	| Account Status: Active
+	| Account Type: Savings
+	| Transaction PIN: 1717
+	+------------------------------+
+
+
+	+------------------------------+
+	|      Account Details   MILESRAY   
+	+------------------------------+
+	| First name: Miles
+	| Last name: Ray
+	| Phone number: 07091214399
+	| User name: MILESRAY
+	| User ID: SD043BO
+	| Account number: 0024113634
+	| BVN: NONE
+	| NIN: 23892012832
+	| Account Balance: $100
+	| PIN: 89012
+	| Account Status: Active
+	| Account Type: Current
+	| Transaction PIN: 2341
+	+------------------------------+
+
