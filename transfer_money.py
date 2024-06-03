@@ -5,6 +5,7 @@ import string
 import random
 from datetime import datetime
 from create_acct import check_restrictions
+from create_acct import check_withdrawable_amount
 
 # connecting to the mysql server
 conn_obj = sql.connect(
@@ -16,6 +17,19 @@ conn_obj = sql.connect(
 
 # connecting to the mysql server
 my_cur = conn_obj.cursor()
+
+
+def gen_transaction_id():
+    letters = string.ascii_letters.upper() + string.digits
+    letters_list = list(letters)
+    trr = []
+    for _ in letters_list:
+        scrambled = ''.join(random.choices(letters_list))
+        transaction_id_all = ''.join(scrambled)
+        transaction_ids = transaction_id_all[0:22]
+        trr.append(transaction_ids)
+    transaction_id = ''.join(trr[:23])
+    return transaction_id
 
 
 def log_transaction(transaction_id, amount, sender_user_name, recipient_user_name, description):
@@ -48,31 +62,44 @@ def log_transaction_failed(sender_user_name, recipient_account, amount, descript
 
 def transfer_money(user_name, pin, recipient_account, amount, description):
     try:
+        # Prompt user for transaction PIN
         trans_pin_input = input('Enter your transaction PIN: ')
+
+        # Check if the entered PIN is valid
         check_pin_query = "SELECT transaction_pin, acct_type FROM bank_tbl WHERE user_name = %s and PIN = %s"
         my_cur.execute(check_pin_query, (user_name, pin))
         result = my_cur.fetchone()
+
         if result:
             trans_pin, acct_type = result
+
+            # Validate the transaction PIN
             if trans_pin_input == trans_pin:
                 # Check the restrictions before proceeding
                 status, message = check_restrictions(acct_type, 'transfer', amount)
                 if not status:
-                    print(message)
+                    txf.display_error(message)
                     return
 
-            # Retrieve sender's account details
-            sender_user_name = user_name
+                # Check withdrawable amount
+                can_withdraw, message = check_withdrawable_amount(user_name, pin, amount)
+                if not can_withdraw:
+                    txf.display_error(message)
+                    return
 
-            # Check if recipient's account exists and is active
-            bring_recipient_name = "SELECT * FROM bank_tbl WHERE acct_num = %s"
-            my_cur.execute(bring_recipient_name, (recipient_account,))
-            reciever = my_cur.fetchone()
+                # Retrieve sender's account details
+                sender_user_name = user_name
 
-            select_sender_acct = "SELECT acct_bal FROM bank_tbl WHERE user_name = %s AND PIN = %s"
-            my_cur.execute(select_sender_acct, (sender_user_name, pin))
-            sender_balance = my_cur.fetchone()[0]
-            if sender_balance:
+                # Check if recipient's account exists and is active
+                bring_recipient_name = "SELECT * FROM bank_tbl WHERE acct_num = %s"
+                my_cur.execute(bring_recipient_name, (recipient_account,))
+                reciever = my_cur.fetchone()
+
+                # Get sender's account balance
+                select_sender_acct = "SELECT acct_bal FROM bank_tbl WHERE user_name = %s AND PIN = %s"
+                my_cur.execute(select_sender_acct, (sender_user_name, pin))
+                sender_balance = my_cur.fetchone()[0]
+
                 if sender_balance >= amount:
                     if reciever and reciever[11] == 'Active':
                         # Calculate charges
@@ -93,31 +120,21 @@ def transfer_money(user_name, pin, recipient_account, amount, description):
                         update_recipient_acct = "UPDATE bank_tbl SET acct_bal = acct_bal + %s WHERE acct_num = %s"
                         my_cur.execute(update_recipient_acct, (amount_rec, recipient_account))
 
+                        # Confirm the transfer with the user
                         confirm = input(
-                            f"\n\033[1mYou are about to transfer ${amount} to {reciever[4]} (-${charges} for charges).\n Proceed with Transfer?[Y/N]: \033[0m").upper()
+                            f"\n\033[1mYou are about to transfer ${amount} to {reciever[4]} (+${charges} for charges).\n Proceed with Transfer?[Y/N]: \033[0m").upper()
+
                         if confirm == 'Y':
-
-                            def gen_transaction_id():
-                                letters = string.ascii_letters.upper() + string.digits
-                                letters_list = list(letters)
-                                trr = []
-                                for _ in letters_list:
-                                    scrambled = ''.join(random.choices(letters_list))
-                                    transaction_id_all = ''.join(scrambled)
-                                    transaction_ids = transaction_id_all[0:22]
-                                    trr.append(transaction_ids)
-                                transaction_id = ''.join(trr[:23])
-                                return transaction_id
-
+                            # Generate transaction ID
                             transaction_id = gen_transaction_id()
 
-                            # # Log transaction details
-
+                            # Log transaction details
                             log_transaction(transaction_id, amount_tr, sender_user_name, reciever[4], description)
                             txf.print_with_delay('.......')
                             time.sleep(2)
                             print(
                                 f"\n\033[1mTransfer successful.\033[0m\n \033[1m{sender_user_name}, You have transferred \033[32m${amount}\033[0m to {reciever[4]}\033[0m ")
+
                             # Get sender's account type
                             sender_acct_type_query = "SELECT acct_type FROM bank_tbl WHERE user_name = %s"
                             my_cur.execute(sender_acct_type_query, (sender_user_name,))
@@ -132,32 +149,31 @@ def transfer_money(user_name, pin, recipient_account, amount, description):
                             my_cur.execute(reciever_acct_type_query, (recipient_account,))
                             reciever_acct_type = my_cur.fetchone()[0]
 
-                            # Update recipient acounts table
+                            # Update recipient's account balance
                             update_accounts_query = "UPDATE bank_tbl SET acct_bal = acct_bal + %s WHERE user_name = %s and acct_type = %s"
                             my_cur.execute(update_accounts_query, (amount, reciever[4], reciever_acct_type))
                             conn_obj.commit()
 
-                            # Update sender acounts table
+                            # Update sender's account balance
                             update_accounts_query = "UPDATE accounts SET balance = balance - %s WHERE user_name = %s and account_type = %s"
                             my_cur.execute(update_accounts_query, (amount, sender_user_name, sender_acct_type))
                             conn_obj.commit()
 
-                            # Update sender acounts table
+                            # Update recipient's account balance
                             update_accounts_query = "UPDATE accounts SET balance = balance + %s WHERE user_name = %s and account_type = %s"
                             my_cur.execute(update_accounts_query, (amount, reciever[4], reciever_acct_type))
                             conn_obj.commit()
 
-                            # Insert transaction record directly into the database
+                            # Insert transaction record into the database
                             update_trans_table = "INSERT INTO transaction_tbl (transaction_id,transaction_amount,sender_acct_num,reciever_acct_num,sender_user_name,reciever_user_name,transaction_date_time,description,sender_acct_type,reciever_acct_type,transaction_status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s)"
                             my_cur.execute(update_trans_table, (
                                 transaction_id, amount_tr, sender_acct, recipient_account, sender_user_name,
                                 reciever[4], datetime.now(), description, sender_acct_type,
                                 reciever_acct_type, 'Successful'))
                             conn_obj.commit()
-
                         else:
                             print('\n\033[31mYou have cancelled the transfer\033[0m')
-
+                    # Handle cases where recipient account is suspended or
                     elif reciever and reciever[11] == 'Suspended':
                         charges = 0.015 * amount
                         amount_tr = amount - charges
@@ -181,18 +197,7 @@ def transfer_money(user_name, pin, recipient_account, amount, description):
                         my_cur.execute(reciever_acct_type_query, (recipient_account,))
                         reciever_acct_type = my_cur.fetchone()[0]
 
-                        def gen_transaction_id():
-                            letters = string.ascii_letters.upper() + string.digits
-                            letters_list = list(letters)
-                            trr = []
-                            for _ in letters_list:
-                                scrambled = ''.join(random.choices(letters_list))
-                                transaction_id_all = ''.join(scrambled)
-                                transaction_ids = transaction_id_all[0:22]
-                                trr.append(transaction_ids)
-                            transaction_id = ''.join(trr[:23])
-                            return transaction_id
-
+                        # Generate transaction ID
                         transaction_id = gen_transaction_id()
 
                         # Insert transaction record directly into the database
@@ -225,18 +230,7 @@ def transfer_money(user_name, pin, recipient_account, amount, description):
                         my_cur.execute(reciever_acct_type_query, (recipient_account,))
                         reciever_acct_type = my_cur.fetchone()[0]
 
-                        def gen_transaction_id():
-                            letters = string.ascii_letters.upper() + string.digits
-                            letters_list = list(letters)
-                            trr = []
-                            for _ in letters_list:
-                                scrambled = ''.join(random.choices(letters_list))
-                                transaction_id_all = ''.join(scrambled)
-                                transaction_ids = transaction_id_all[0:22]
-                                trr.append(transaction_ids)
-                            transaction_id = ''.join(trr[:23])
-                            return transaction_id
-
+                        # Generate transaction ID
                         transaction_id = gen_transaction_id()
 
                         # Insert transaction record directly into the database
@@ -251,9 +245,9 @@ def transfer_money(user_name, pin, recipient_account, amount, description):
                 else:
                     print("\n\033[31mInsufficient balance.\033[0m")
             else:
-                print("\n\033[31mSender account not found.\033[0m")
+                txf.display_error('Invalid PIN')
         else:
-            txf.display_error('Invalid PIN')
+            print("\n\033[31mSender account not found.\033[0m")
     except Exception as e:
         print(f"An error occurred: {e}")
 

@@ -391,3 +391,22 @@
 	| Transaction PIN: 2341
 	+------------------------------+
 
+
+	+------------------------------+
+	|      Account Details   RAYMARK   
+	+------------------------------+
+	| First name: Ray
+	| Last name: Mark
+	| Phone number: 08179281099
+	| User name: RAYMARK
+	| User ID: BO815QK
+	| Account number: 0024148106
+	| BVN: NONE
+	| NIN: 23827381921
+	| Account Balance: $500
+	| PIN: 32091
+	| Account Status: Active
+	| Account Type: Business
+	| Transaction PIN: 2312
+	+------------------------------+
+

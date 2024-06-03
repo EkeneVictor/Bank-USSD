@@ -66,29 +66,37 @@ def is_eligible(user_name):
 
 
 def process_loan_application(user_name, amount, repayment_period, trans_pin_input, pin):
+    # Check if the user is eligible for a loan
     eligibility, message = is_eligible(user_name)
     if not eligibility:
-        return f"Loan application denied: {message}"
+        return f"Loan application denied: {txf.display_error(message)}"
 
+    # Check transaction PIN and account type
     check_pin_query = "SELECT transaction_pin, acct_type FROM bank_tbl WHERE user_name = %s and PIN = %s"
     my_cur.execute(check_pin_query, (user_name, pin))
     result = my_cur.fetchone()
     if result:
         trans_pin, acct_type = result
-        if trans_pin_input == trans_pin:
-            # Check the restrictions before proceeding
-            status, message = check_restrictions(acct_type, 'loan', amount)
-            if not status:
-                print(message)
-                return
+        if trans_pin_input != trans_pin:
+            return txf.display_error("Invalid Transaction PIN")  # Return error message if transaction PIN is incorrect
 
+        # Check if loan amount exceeds restrictions
+        status, message = check_restrictions(acct_type, 'loan', amount)
+        if not status:
+            return txf.display_error(message)  # Return error message if loan amount exceeds restrictions
+
+    else:
+        return txf.display_error("User not found")  # Return error message if user not found in database
+
+    # Calculate loan details
     interest_rate = 0.15
     total_repayment = amount + (amount * interest_rate * (repayment_period / 12))
     monthly_installment = total_repayment / repayment_period
     outstanding_balance = total_repayment
     present_date = datetime.now()
     due_date = present_date + timedelta(days=repayment_period * 30)
-    # Generate a transaction ID
+
+    # Generate transaction ID
     transaction_id = ''.join(random.choices(string.ascii_uppercase + string.digits, k=22))
 
     # Log the loan in the database
@@ -100,29 +108,6 @@ def process_loan_application(user_name, amount, repayment_period, trans_pin_inpu
         'Approved', present_date, outstanding_balance, due_date))
     conn_obj.commit()
 
-    sender_acct = 'LOAN'
-    sender_user_name = 'LOAN'
-    sender_acct_type = 'LOAN'
-
-    select_recipient_acct = "SELECT acct_num FROM bank_tbl WHERE user_name = %s"
-    my_cur.execute(select_recipient_acct, user_name)
-    recipient_account = my_cur.fetchone()[0]
-
-    # Get recipient's account type
-    reciever_acct_type_query = "SELECT acct_type FROM bank_tbl WHERE acct_num = %s"
-    my_cur.execute(reciever_acct_type_query, (recipient_account,))
-    reciever_acct_type = my_cur.fetchone()[0]
-
-    description = f'LOAN OF {amount}'
-
-    # log the loan into transaction table
-    update_trans_table = "INSERT INTO transaction_tbl (transaction_id,transaction_amount,sender_acct_num,reciever_acct_num,sender_user_name,reciever_user_name,transaction_date_time,description,sender_acct_type,reciever_acct_type,transaction_status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s)"
-    my_cur.execute(update_trans_table, (
-        transaction_id, amount, sender_acct, recipient_account, sender_user_name,
-        user_name, datetime.now(), description, sender_acct_type,
-        reciever_acct_type, 'Successful'))
-    conn_obj.commit()
-
     # Update user's account balance
     update_balance_query = "UPDATE bank_tbl SET acct_bal = acct_bal + %s WHERE user_name = %s"
     my_cur.execute(update_balance_query, (amount, user_name))
@@ -130,10 +115,10 @@ def process_loan_application(user_name, amount, repayment_period, trans_pin_inpu
 
     # Update accounts table
     update_accounts_query = "UPDATE accounts SET balance = balance + %s WHERE user_name = %s and account_type = %s"
-    my_cur.execute(update_accounts_query, (amount, user_name, reciever_acct_type))
+    my_cur.execute(update_accounts_query, (amount, user_name, acct_type))
     conn_obj.commit()
 
-    # Update admins account balance
+    # Update admin's account balance
     update_admin_query = "UPDATE bank_tbl SET acct_bal = acct_bal - %s WHERE user_name = %s"
     my_cur.execute(update_admin_query, (amount, 'BANKADMIN'))
     conn_obj.commit()
@@ -314,35 +299,3 @@ def make_loan_repayment(user_name):
 
     except Exception as e:
         return f"An error occurred while processing loan repayment: {e}"
-
-
-def loan_menu(user_name):
-    print(
-        txf.bold() + "\t\t\t\t\t\t\t\t\t\t\t\t\t+-----------------------+---------------+------------------+--------------+")
-    print("\t\t\t\t\t\t\t\t\t\t\t\t\t| Loan  Menu                                                             |")
-    print("\t\t\t\t\t\t\t\t\t\t\t\t\t+----------------------+----------------+------------------+--------------+")
-    print("\t\t\t\t\t\t\t\t\t\t\t\t\t| 1.  Apply for Loan   | 2. Loan Status | 3. Repay Loan    | 4.   Exit    |")
-    print("\t\t\t\t\t\t\t\t\t\t\t\t\t+----------------------+----------------+------------------+--------------+\n")
-
-    user_input = input(">>>: ")
-    if user_input == "1":
-        time.sleep(3)
-        amount = float(input("Enter loan amount: "))
-        repayment_period = int(input("Enter repayment period in months: "))
-        trans_pin_input = input("Enter your transaction pin: ")
-        response = process_loan_application(user_name, amount, repayment_period, trans_pin_input, config.pin_)
-        print(response)
-    elif user_input == "2":
-        time.sleep(2)
-        response = check_loan_status(user_name)
-        print(response)
-    elif user_input == '3':
-        time.sleep(1)
-        response = make_loan_repayment(user_name)
-        print(response)
-    elif user_input == '4':
-        time.sleep(1.5)
-        txf.print_with_delay(txf.italic() + '\n\tExiting...' + txf.end())
-        loggedinmenu.logged_in_menu()
-    else:
-        print("Invalid input. Please try again.")

@@ -40,3 +40,15 @@ Amount: $20000.0
 Description: Loan Disbursement
 Date/Time: 2024-05-30 07:34:37.654918
 --------------------------------------------
+Transaction ID: QR0IM6FB92QVF0NIA5PZD6
+User: BRUCEWAYNE
+Amount: $30000000.0
+Description: Loan Disbursement
+Date/Time: 2024-06-03 18:43:21.071814
+--------------------------------------------
+Transaction ID: C78USPJ0TXWYVV9U5M3SKD
+User: BRYANJOHNSON
+Amount: $50000.0
+Description: Loan Disbursement
+Date/Time: 2024-06-03 21:52:15.874935
+--------------------------------------------

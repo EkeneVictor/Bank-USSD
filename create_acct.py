@@ -19,6 +19,22 @@ conn_obj = sql.connect(
 my_cur = conn_obj.cursor()
 
 
+def check_withdrawable_amount(user_name, pin, amount):
+    select_query = "SELECT acct_bal, initial_balance FROM bank_tbl WHERE user_name = %s AND PIN = %s"
+    my_cur.execute(select_query, (user_name, pin))
+    result = my_cur.fetchone()
+
+    if result:
+        acct_bal, initial_balance = result
+        available_balance = acct_bal - initial_balance
+        if amount <= available_balance:
+            return True, available_balance
+        else:
+            return False, f"Insufficient funds. Available balance (excluding initial deposit) is: ${available_balance:.2f}"
+    else:
+        return False, "Account not found"
+
+
 class AccountRestrictions:
     def __init__(self, min_balance, max_balance, max_withdrawal, max_deposit, interest_rate, transfer_limit, max_loan):
         self.min_balance = min_balance

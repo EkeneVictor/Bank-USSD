@@ -52,8 +52,8 @@ def back_to_loan_menu():
     bck = input(":")
     time.sleep(1)
     if bck == '#':
-        import loan_money
-        loan_money.loan_menu(config.user_name)
+        import loan_menu
+        loan_menu.loan_menu(config.user_name)
     else:
         sys.exit()
 

@@ -86,7 +86,7 @@ def logged_in_menu():
             cipher_ai()
             break
         elif cntn == '11':
-            from loan_money import loan_menu
+            from loan_menu import loan_menu
             time.sleep(2)
             loan_menu(config.user_name)
             break
