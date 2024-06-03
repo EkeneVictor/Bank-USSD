@@ -4,6 +4,8 @@ import textformatting as txf
 import string
 import random
 from datetime import datetime
+from create_acct import check_withdrawable_amount
+
 
 # connecting to the mysql server
 conn_obj = sql.connect(
@@ -39,6 +41,13 @@ def pay_water_bill(user_name, pin):
     confirm = input(f"\n\tDo you want to proceed with the payment [Y/N] ?:  ").upper()
 
     if confirm == 'Y':
+
+        # Check withdrawable amount
+        can_withdraw, message = check_withdrawable_amount(user_name, pin, bill)
+        if not can_withdraw:
+            txf.display_error(message)
+            return
+
         charges = 0.015 * bill
         amount_paid = bill + charges
 
