@@ -20,7 +20,7 @@ def check_acct_details(user_name, pin):
             f'\t| Account number: {user_data[6]}\n'
             f'\t| BVN: {user_data[7]}\n'
             f'\t| NIN: {user_data[8]}\n'
-            f'\t| Account Balance: ${user_data[9]}\n'
+            f'\t| Account Balance: ${int(user_data[9]):,}\n'
             f'\t| PIN: {user_data[10]}\n'
             f'\t| Account Status: {user_data[11]}\n'
             f'\t| Account Type: {user_data[12]}\n'

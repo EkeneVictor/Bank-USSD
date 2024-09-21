@@ -27,7 +27,11 @@ def retr_user_data(user_name, pin_):
         my_cur.execute(check_login_data, (user_name, pin_))
         user = my_cur.fetchone()
         if user:
+            config.user_name = user_name
+            config.pin_ = pin_
             return user
+        else:
+            print('user not found')
     else:
         txf.display_error('You have not logged in')
         return None  # Return None if the user is not logged in
@@ -47,9 +51,13 @@ def retrieve_user_data():
         user = my_cur.fetchone()
 
         if user:
+
+            config.user_name = user_name
+            config.pin_ = pin_
             return user
-        config.user_name = user_name
-        config.pin_ = pin_
+        else:
+            print('user not found')
+
     else:
         txf.display_error('You have not logged in')
         return None  # Return None if the user is not logged in

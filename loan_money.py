@@ -1,12 +1,11 @@
 import time
 import pymysql as sql
-from create_acct import check_restrictions
+from create_acct import check_restrictions, check_withdrawable_amount
 import config
 import textformatting as txf
 import string
 import random
 from datetime import datetime, timedelta
-import loggedinmenu
 
 # connecting to the mysql server
 
@@ -69,7 +68,7 @@ def process_loan_application(user_name, amount, repayment_period, trans_pin_inpu
     # Check if the user is eligible for a loan
     eligibility, message = is_eligible(user_name)
     if not eligibility:
-        return f"Loan application denied: {txf.display_error(message)}"
+        return f"Loan application deenied: {txf.display_error(message)}"
 
     # Check transaction PIN and account type
     check_pin_query = "SELECT transaction_pin, acct_type FROM bank_tbl WHERE user_name = %s and PIN = %s"
@@ -126,29 +125,38 @@ def process_loan_application(user_name, amount, repayment_period, trans_pin_inpu
     # Log the loan transaction
     log_loan(transaction_id, amount, user_name, "Loan Disbursement")
 
-    return f"Loan approved: ${amount} disbursed. Monthly installment: ${monthly_installment:.2f}"
+    return f"Loan approved: ${amount:,} disbursed. Monthly installment: ${monthly_installment:,.2f}"
 
 
 def check_loan_status(user_name):
     try:
-        check_loan_query = "SELECT amount, total_repayment, monthly_installment, repayment_period, outstanding_balance, status FROM loans_tbl WHERE user_name = %s AND status = 'Approved'"
+        print('i')
+        check_loan_query = "SELECT amount, total_repayment, monthly_installment, repayment_period, outstanding_balance, status, repayment_status FROM loans_tbl WHERE user_name = %s AND status = 'Approved'"
         my_cur.execute(check_loan_query, (user_name,))
         loans = my_cur.fetchall()
 
         if not loans:
+            print('g')
             return "No active loans"
 
         loan_details = ""
         for loan in loans:
-            amount, total_repayment, monthly_installment, repayment_period, outstanding_balance, status = loan
-            loan_details += f"Loan Amount: ${amount}\n"
-            loan_details += f"Total Repayment: ${total_repayment}\n"
-            loan_details += f"Monthly Installment: ${monthly_installment}\n"
+            print('f')
+            amount, total_repayment, monthly_installment, repayment_period, outstanding_balance, status, repayment_status = loan
+            loan_details += f"Loan Amount: ${amount:,}\n"
+            loan_details += f"Total Repayment: ${total_repayment:,}\n"
+            loan_details += f"Monthly Installment: ${monthly_installment:,}\n"
             loan_details += f"Repayment Period: {repayment_period} months\n"
-            loan_details += f"Outstanding Balance: ${outstanding_balance}\n"
-            loan_details += f"Status: {status}\n\n"
+            loan_details += f"Outstanding Balance: ${outstanding_balance:,}\n"
+            loan_details += f"Status: {status}\n"
+            loan_details += f"Repayment Status: {repayment_status}\n\n"
 
-        return loan_details.strip()
+            if repayment_status != 'Pending':
+                print('t')
+                return loan_details.strip()
+            else:
+                print('r')
+                return 'No active loans'
 
     except Exception as e:
         return f"An error occurred while fetching loan details: {e}"
@@ -230,9 +238,15 @@ def make_loan_repayment(user_name):
         transaction_id, outstanding_balance = loan
 
         if loan:
-            print(f'You have an outstanding balance of ${outstanding_balance}')
+            print(f'You have an outstanding balance of ${outstanding_balance:,}')
             time.sleep(2)
             amount = float(input('Enter amount you would like to pay off: '))
+
+            # Check withdrawable amount
+            can_withdraw, message = check_withdrawable_amount(user_name, config.pin_, amount)
+            if not can_withdraw:
+                txf.display_error(message)
+                return
 
             if amount > outstanding_balance:
                 return "Repayment amount exceeds outstanding balance."
@@ -267,7 +281,7 @@ def make_loan_repayment(user_name):
 
             recipient_acct = 'LOAN REPAYMENT'
             rec_user_name = 'LOAN REPAYMENT'
-            description = f'REPAYMENT OF ${amount} LOAN'
+            description = f'REPAYMENT OF ${amount:,} LOAN'
             rec_acct_type = 'LOAN REPAYMENT'
 
             # log the loan repayment into transaction table
@@ -293,9 +307,10 @@ def make_loan_repayment(user_name):
                 update_loan_status_query = "UPDATE loans_tbl SET repayment_status = 'Paid' WHERE transaction_id = %s"
                 my_cur.execute(update_loan_status_query, (transaction_id,))
                 conn_obj.commit()
-                return f"Loan repayment successful.\nYour new outstanding balance is ${new_balance}.\nYou have cleared your loan."
+                return f"Loan repayment successful.\nYour new outstanding balance is ${new_balance:,}.\nYou have cleared your loan."
             else:
-                return f"Loan repayment successful.\nYour new outstanding balance is ${new_balance}."
+                return f"Loan repayment successful.\nYour new outstanding balance is ${new_balance:,}."
 
     except Exception as e:
         return f"An error occurred while processing loan repayment: {e}"
+

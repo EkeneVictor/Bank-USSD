@@ -1,4 +1,3 @@
-[1m
 	+------------------------------+
 	|      Account Details   JAKEAREE   
 	+------------------------------+
@@ -408,5 +407,195 @@
 	| Account Status: Active
 	| Account Type: Business
 	| Transaction PIN: 2312
+	+------------------------------+
+
+
+	+------------------------------+
+	|      Account Details   DYLANPAIGE   
+	+------------------------------+
+	| First name: Dylan
+	| Last name: Paige
+	| Phone number: 09089181223
+	| User name: DYLANPAIGE
+	| User ID: VI811BD
+	| Account number: 0024183734
+	| BVN: 78193012123
+	| NIN: 8723127811
+	| Account Balance: $500
+	| PIN: 90345
+	| Account Status: Active
+	| Account Type: Business
+	| Transaction PIN: 5672
+	+------------------------------+
+
+
+	+------------------------------+
+	|      Account Details   EKENECHISOM   
+	+------------------------------+
+	| First name: Ekene
+	| Last name: Chisom
+	| Phone number: 09087387623
+	| User name: EKENECHISOM
+	| User ID: AV680NZ
+	| Account number: 0024153968
+	| BVN: 12345678876
+	| NIN: NONE
+	| Account Balance: $100
+	| PIN: 89084
+	| Account Status: Active
+	| Account Type: Current
+	| Transaction PIN: 5434
+	+------------------------------+
+
+
+	+------------------------------+
+	|      Account Details   BRYANJOHNSON   
+	+------------------------------+
+	| First name: Bryan
+	| Last name: Johnson
+	| Phone number: 09173530802
+	| User name: BRYANJOHNSON
+	| User ID: CU529PW
+	| Account number: 0024114929
+	| BVN: NONE
+	| NIN: 21124536721
+	| Account Balance: $50
+	| PIN: 54290
+	| Account Status: Active
+	| Account Type: Savings
+	| Transaction PIN: 3211
+	+------------------------------+
+
+
+	+------------------------------+
+	|      Account Details   GOLDBEGG   
+	+------------------------------+
+	| First name: Gold
+	| Last name: Begg
+	| Phone number: 09048820138
+	| User name: GOLDBEGG
+	| User ID: KT354TG
+	| Account number: 0024166732
+	| BVN: NONE
+	| NIN: 73891001241
+	| Account Balance: $100
+	| PIN: 82492
+	| Account Status: Active
+	| Account Type: Current
+	| Transaction PIN: 0191
+	+------------------------------+
+
+
+	+------------------------------+
+	|      Account Details   DOZIEEZENWA   
+	+------------------------------+
+	| First name: Dozie
+	| Last name: Ezenwa
+	| Phone number: 09134030454
+	| User name: DOZIEEZENWA
+	| User ID: UK488CC
+	| Account number: 0024113496
+	| BVN: 34345434543
+	| NIN: NONE
+	| Account Balance: $50
+	| PIN: 03095
+	| Account Status: Active
+	| Account Type: Savings
+	| Transaction PIN: 2036
+	+------------------------------+
+
+
+	+------------------------------+
+	|      Account Details   BARRACKOBAMA   
+	+------------------------------+
+	| First name: Barrack
+	| Last name: Obama
+	| Phone number: 09028761109
+	| User name: BARRACKOBAMA
+	| User ID: DE228BZ
+	| Account number: 0024136426
+	| BVN: 43552189232
+	| NIN: NONE
+	| Account Balance: $100
+	| PIN: 53432
+	| Account Status: Active
+	| Account Type: Current
+	| Transaction PIN: 2210
+	+------------------------------+
+
+
+	+------------------------------+
+	|      Account Details   REDBLUE   
+	+------------------------------+
+	| First name: Red
+	| Last name: Blue
+	| Phone number: 09087651234
+	| User name: REDBLUE
+	| User ID: IU746GC
+	| Account number: 0024157808
+	| BVN: NONE
+	| NIN: 55467231232
+	| Account Balance: $50
+	| PIN: 44421
+	| Account Status: Active
+	| Account Type: Savings
+	| Transaction PIN: 4442
+	+------------------------------+
+
+
+	+------------------------------+
+	|      Account Details   BLACKPINK   
+	+------------------------------+
+	| First name: Black
+	| Last name: Pink
+	| Phone number: 09012345512
+	| User name: BLACKPINK
+	| User ID: JN185QQ
+	| Account number: 0024161188
+	| BVN: 33222990121
+	| NIN: NONE
+	| Account Balance: $50
+	| PIN: 33333
+	| Account Status: Active
+	| Account Type: Savings
+	| Transaction PIN: 1111
+	+------------------------------+
+
+
+	+------------------------------+
+	|      Account Details   REDBLU   
+	+------------------------------+
+	| First name: Red
+	| Last name: Blu
+	| Phone number: 07122210987
+	| User name: REDBLU
+	| User ID: CW726VR
+	| Account number: 0024139924
+	| BVN: 44455511232
+	| NIN: NONE
+	| Account Balance: $50
+	| PIN: 33871
+	| Account Status: Active
+	| Account Type: Savings
+	| Transaction PIN: 1212
+	+------------------------------+
+
+
+	+------------------------------+
+	|      Account Details   DAVIDBLAINE   
+	+------------------------------+
+	| First name: David
+	| Last name: Blaine
+	| Phone number: 09129981221
+	| User name: DAVIDBLAINE
+	| User ID: ST859AI
+	| Account number: 0024127804
+	| BVN: 43348929343
+	| NIN: NONE
+	| Account Balance: $50
+	| PIN: 32219
+	| Account Status: Active
+	| Account Type: Savings
+	| Transaction PIN: 2211
 	+------------------------------+
 

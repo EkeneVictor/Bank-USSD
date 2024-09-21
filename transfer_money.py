@@ -122,7 +122,7 @@ def transfer_money(user_name, pin, recipient_account, amount, description):
 
                         # Confirm the transfer with the user
                         confirm = input(
-                            f"\n\033[1mYou are about to transfer ${amount} to {reciever[4]} (+${charges} for charges).\n Proceed with Transfer?[Y/N]: \033[0m").upper()
+                            f"\n\033[1mYou are about to transfer ${amount:,} to {reciever[4]} (+${charges:,} for charges).\n Proceed with Transfer?[Y/N]: \033[0m").upper()
 
                         if confirm == 'Y':
                             # Generate transaction ID
@@ -133,7 +133,7 @@ def transfer_money(user_name, pin, recipient_account, amount, description):
                             txf.print_with_delay('.......')
                             time.sleep(2)
                             print(
-                                f"\n\033[1mTransfer successful.\033[0m\n \033[1m{sender_user_name}, You have transferred \033[32m${amount}\033[0m to {reciever[4]}\033[0m ")
+                                f"\n\033[1mTransfer successful.\033[0m\n \033[1m{sender_user_name}, You have transferred \033[32m${amount:,}\033[0m to {reciever[4]}\033[0m ")
 
                             # Get sender's account type
                             sender_acct_type_query = "SELECT acct_type FROM bank_tbl WHERE user_name = %s"
@@ -148,11 +148,6 @@ def transfer_money(user_name, pin, recipient_account, amount, description):
                             reciever_acct_type_query = "SELECT acct_type FROM bank_tbl WHERE acct_num = %s"
                             my_cur.execute(reciever_acct_type_query, (recipient_account,))
                             reciever_acct_type = my_cur.fetchone()[0]
-
-                            # Update recipient's account balance
-                            update_accounts_query = "UPDATE bank_tbl SET acct_bal = acct_bal + %s WHERE user_name = %s and acct_type = %s"
-                            my_cur.execute(update_accounts_query, (amount, reciever[4], reciever_acct_type))
-                            conn_obj.commit()
 
                             # Update sender's account balance
                             update_accounts_query = "UPDATE accounts SET balance = balance - %s WHERE user_name = %s and account_type = %s"

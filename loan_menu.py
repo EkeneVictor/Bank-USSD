@@ -20,8 +20,7 @@ def loan_menu(user_name):
         amount = float(input("Enter loan amount: "))
         repayment_period = int(input("Enter repayment period in months: "))
         trans_pin_input = input("Enter your transaction pin: ")
-        response = process_loan_application(user_name, amount, repayment_period, trans_pin_input,  config.pin_)
-        print(response)
+        process_loan_application(user_name, amount, repayment_period, trans_pin_input,  config.pin_)
         backs.back_to_loan_menu()
     elif user_input == "2":
         time.sleep(2)

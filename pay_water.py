@@ -37,19 +37,19 @@ def pay_water_bill(user_name, pin):
     time.sleep(2)
     bills = [200, 250, 100, 150, 50, 400, 500, 450, 550, 600, 560, 650, 300, 320, 350, 1050, 1500, 1120]
     bill = random.choice(bills)
-    print(f"\n\tYour outstanding bill amount for water is ${bill}.")
+    print(f"\n\tYour outstanding bill amount for water is ${bill:,}.")
     confirm = input(f"\n\tDo you want to proceed with the payment [Y/N] ?:  ").upper()
 
     if confirm == 'Y':
 
+        charges = 0.015 * bill
+        amount_paid = bill + charges
+
         # Check withdrawable amount
-        can_withdraw, message = check_withdrawable_amount(user_name, pin, bill)
+        can_withdraw, message = check_withdrawable_amount(user_name, pin, amount_paid)
         if not can_withdraw:
             txf.display_error(message)
             return
-
-        charges = 0.015 * bill
-        amount_paid = bill + charges
 
         acct_type = 'Admin'
         select_admin_acc_bal = "SELECT acct_bal FROM bank_tbl WHERE acct_type = %s"
@@ -83,7 +83,7 @@ def pay_water_bill(user_name, pin):
                     conn_obj.commit()
 
                     print(
-                        f"\n\t\033[Payment successful. \n\tYou have paid \033[32m${bill}\033[0m for water (\033[31m-${charges}\033[0m for charges). Your new balance is \033[32m${new_balance}\033[0m\033[0m")
+                        f"\n\t\033[Payment successful. \n\tYou have paid \033[32m${bill:,}\033[0m for water (\033[31m-${charges}\033[0m for charges). Your new balance is \033[32m${new_balance:,}\033[0m\033[0m")
 
                     select_withdrawal_acct_num = "SELECT acct_num FROM bank_tbl where user_name = %s AND PIN = %s"
                     my_cur.execute(select_withdrawal_acct_num, (user_name, pin))
@@ -93,7 +93,7 @@ def pay_water_bill(user_name, pin):
                     transaction_id = gen_transaction_id()
                     with open('bill_payments.txt', 'a') as bill_payments:
                         bill_payments.write(
-                            f'Acct: ****{withdrawal_acct[-4:]}\nDR:${amount_paid}  (-${charges} charges)\nTRANSACTION ID:{transaction_id}\nDesc:PAYMENT OF ${bill} FOR WATER:\nDT:{datetime.now()}\n Dial *389# to access bank services\n\n')
+                            f'Acct: ****{withdrawal_acct[-4:]}\nDR:${amount_paid:,}  (-${charges} charges)\nTRANSACTION ID:{transaction_id}\nDesc:PAYMENT OF ${bill:,} FOR WATER:\nDT:{datetime.now()}\n Dial *389# to access bank services\n\n')
 
                     trans_amount = bill
                     sender_acct_num = withdrawal_acct

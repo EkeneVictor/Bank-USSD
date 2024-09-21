@@ -30,7 +30,7 @@ def check_withdrawable_amount(user_name, pin, amount):
         if amount <= available_balance:
             return True, available_balance
         else:
-            return False, f"Insufficient funds. Available balance (excluding initial deposit) is: ${available_balance:.2f}"
+            return False, f"Insufficient funds. Available balance (excluding minimum balance) is: ${available_balance:,.2f}"
     else:
         return False, "Account not found"
 
@@ -67,7 +67,7 @@ current_restrictions = AccountRestrictions(
 def handle_transaction(account_type, action, amount):
     status, message = check_restrictions(account_type, action, amount)
     if not status:
-        print(message)
+        txf.display_error(message)
         return
 
 
@@ -124,7 +124,7 @@ def conf_acct_type(acct_type):
 
         if initial_deposit < 50:
             time.sleep(1)
-            print("Invalid deposit. Minimum deposit is $50.")
+            txf.display_error("Invalid deposit. Minimum deposit is $50.")
             return 'Invalid Savings Deposit'
 
         return 'Savings'
@@ -136,7 +136,7 @@ def conf_acct_type(acct_type):
             "G10011", "G10012", "G10013", "G10014", "G10015", "G10016", "G10017", "G10018", "G10019", "G10020"]
 
         if government_id not in valid_government_ids:
-            print('Invalid Government ID')
+            # print('Invalid Government ID')
             return 'Invalid Government ID'
 
         return 'Current'
@@ -148,7 +148,7 @@ def conf_acct_type(acct_type):
             "B10011", "B10012", "B10013", "B10014", "B10015", "B10016", "B10017", "B10018", "B10019", "B10020"]
 
         if business_reg_number not in valid_registration_numbers:
-            print('Invalid Registration Number')
+            txf.display_error('Invalid Registration Number')
             return 'Invalid Registration'
 
         return 'Business'
@@ -185,9 +185,8 @@ def conf_acct_type(acct_type):
             "S10191", "S10192", "S10193", "S10194", "S10195", "S10196", "S10197", "S10198", "S10199", "S10200"]
 
         if student_id not in valid_ids:
-            print('Invalid Student ID')
+            txf.display_error('Invalid Student ID')
             return 'Invalid ID'
-
         return "Student"
     else:
         return 'Invalid Input'
@@ -221,7 +220,7 @@ def get_user_input(prompt):
 
 def display_error(message):
     """function that displays error message"""
-    print(txf.red() + message + txf.end())
+    print(txf.italic() + txf.red() + '\t' + message + txf.end() + txf.end())
     time.sleep(1)
 
 
@@ -340,7 +339,7 @@ def print_account_details(split_details):
         f'\t| Account number: {split_details[5]}\n'
         f'\t| BVN: {split_details[6]}\n'
         f'\t| NIN: {split_details[7]}\n'
-        f'\t| Account Balance: ${split_details[8]}\n'
+        f'\t| Account Balance: ${int(split_details[8]):,}\n'
         f'\t| PIN: {split_details[9]}\n'
         f'\t| Account Status: {split_details[10]}\n'
         f'\t| Account Type: {split_details[11]}\n'
@@ -364,7 +363,7 @@ def write_to_file(split_details, user_name_inp):
             f'\t| Account number: {split_details[5]}\n'
             f'\t| BVN: {split_details[6]}\n'
             f'\t| NIN: {split_details[7]}\n'
-            f'\t| Account Balance: ${split_details[8]}\n'
+            f'\t| Account Balance: ${int(split_details[8]):,}\n'
             f'\t| PIN: {split_details[9]}\n'
             f'\t| Account Status: {split_details[10]}\n'
             f'\t| Account Type: {split_details[11]}\n'
@@ -375,11 +374,12 @@ def write_to_file(split_details, user_name_inp):
 
 # function to create account
 nin_input = 'NONE'
+initial_balance = 0
 
 
 def create_acct_v2(user_id):
     """Function to create account"""
-    global nin_input
+    global nin_input, initial_balance
     print(txf.bold() + '*Fill in your details below to open another account\n' + txf.end())
     time.sleep(1.5)
     # creating empty list that acts as temporary storage
@@ -470,12 +470,17 @@ def create_acct_v2(user_id):
             break
     if acct_type == 'Savings':
         acct_bal = 50
+        initial_balance = 50
     elif acct_type == 'Business':
         acct_bal = 500
+        initial_balance = 500
     elif acct_type == 'Student':
         acct_bal = 0
+        initial_balance = 0
+    elif acct_type == 'Current':
+        acct_bal = 100
+        initial_balance = 100
     time.sleep(0.5)
-    gen_acct_num()
     temp_list.append(fname)
     temp_list.append(lname)
     temp_list.append(phone_num)
@@ -511,11 +516,11 @@ def create_acct_v2(user_id):
     write_to_file(split_details, user_name_inp)
 
     # SQL Insert query
-    inst_acct_dtls = "INSERT INTO bank_tbl (first_name,last_name,phone_num,user_name,user_id,acct_num,bvn_num,nin_num,acct_bal,PIN,acct_status,acct_type,transaction_pin,creation_date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    inst_acct_dtls = "INSERT INTO bank_tbl (first_name,last_name,phone_num,user_name,user_id,acct_num,bvn_num,nin_num,acct_bal,PIN,acct_status,acct_type,transaction_pin,creation_date,initial_balance) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     # Execute the query with user phone_num
     my_cur.execute(inst_acct_dtls,
                    (fname, lname, phone_num, user_name_inp, user_id, acct_numb, bvn_input, nin_input, acct_bal, pin_,
-                    acct_stat, acct_type, transaction_pin, created_at))
+                    acct_stat, acct_type, transaction_pin, created_at, initial_balance))
 
     inst_acct_db = "INSERT INTO accounts (user_id,user_name,account_type,balance,created_at) VALUES (%s, %s, %s, %s, %s)"
     my_cur.execute(inst_acct_db, (user_id, user_name_inp, acct_type, acct_bal, created_at))
@@ -532,7 +537,7 @@ def create_acct_v2(user_id):
 
 def create_acct():
     """Function to create account"""
-    global nin_input
+    global nin_input, initial_balance
     print(txf.bold() + '*Fill in your details below to open an oaccount\n' + txf.end())
     time.sleep(1.5)
     # creating empty list that acts as temporary storage
@@ -578,7 +583,7 @@ def create_acct():
         if result:
             name = result[4]
             time.sleep(2.5)
-            print(txf.bold() + f"Hey {name}, Welcome Back!" + txf.end())
+            print(txf.bold() + f"\n\t\tHey {name}, Welcome Back!" + txf.end())
             time.sleep(2)
             # select_accts = "SELECT * FROM accounts WHERE user_id = %s"
             # my_cur.execute(select_accts, user_id)
@@ -627,26 +632,26 @@ def create_acct():
             acct_type = conf_acct_type(acct_type_inp)
             if acct_type == 'Invalid age':
                 time.sleep(2)
-                print("Cannot create account. Age requirement not met.")
+                txf.display_error("Cannot create account. Age requirement not met.")
                 time.sleep(2)
                 return
             elif acct_type == 'Invalid ID':
                 time.sleep(2)
-                print("Cannot create account. Invalid student ID.")
+                txf.display_error("Cannot create account. Invalid student ID.")
                 time.sleep(2)
                 return
             elif acct_type == 'Invalid Registration':
-                print("Cannot create account. Invalid business registration number.")
+                txf.display_error("Cannot create account. Invalid business registration number.")
                 return
             elif acct_type == 'Invalid Savings Deposit':
-                print("Cannot create account. Minimum deposit for savings account not met.")
+                txf.display_error("Cannot create account. Minimum deposit for savings account not met.")
                 return
             elif acct_type == 'Invalid Government ID':
-                print("Cannot create account. Invalid government ID number.")
+                txf.display_error("Cannot create account. Invalid government ID number.")
                 return
             elif acct_type == 'Invalid Input':
                 time.sleep(2)
-                print("Invalid account type. Please choose from Savings, Business, or Student.")
+                txf.display_error("Invalid account type. Please choose from Savings, Current, Business, or Student.")
                 time.sleep(2)
                 continue
 
@@ -660,12 +665,16 @@ def create_acct():
 
         if acct_type == 'Savings':
             acct_bal = 50
+            initial_balance = 50
         elif acct_type == 'Business':
             acct_bal = 500
+            initial_balance = 500
         elif acct_type == 'Student':
             acct_bal = 0
+            initial_balance = 0
         elif acct_type == 'Current':
             acct_bal = 100
+            initial_balance = 100
         time.sleep(0.5)
         generate_user_id()
         gen_acct_num()
@@ -705,10 +714,10 @@ def create_acct():
         write_to_file(split_details, user_name_inp)
 
         # SQL Insert query
-        inst_acct_dtls = "INSERT INTO bank_tbl (first_name,last_name,phone_num,user_name,user_id,acct_num,bvn_num,nin_num,acct_bal,PIN,acct_status,acct_type,transaction_pin,creation_date) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        inst_acct_dtls = "INSERT INTO bank_tbl (first_name,last_name,phone_num,user_name,user_id,acct_num,bvn_num,nin_num,acct_bal,PIN,acct_status,acct_type,transaction_pin,creation_date,initial_balance) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         # Execute the query with user phone_num
         my_cur.execute(inst_acct_dtls,
-                       (fname, lname, phone_num, user_name_inp, user_id, acct_numb, bvn_input, nin_input, acct_bal, pin_, acct_stat, acct_type, transaction_pin, created_at))
+                       (fname, lname, phone_num, user_name_inp, user_id, acct_numb, bvn_input, nin_input, acct_bal, pin_, acct_stat, acct_type, transaction_pin, created_at, initial_balance))
 
         inst_acct_db = "INSERT INTO accounts (user_id,user_name,account_type,balance,created_at) VALUES (%s, %s, %s, %s, %s)"
         my_cur.execute(inst_acct_db, (user_id, user_name_inp, acct_type, acct_bal, created_at))

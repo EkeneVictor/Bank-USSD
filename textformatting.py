@@ -167,7 +167,7 @@ def get_user_input(prompt):
 
 def display_error(message):
     """function that displays error message"""
-    print(red() + message + end())
+    print(italic() + red() + '\t' + message + end() + end())
     time.sleep(1)
 
 

@@ -51,27 +51,25 @@ def pay_electricity_bill(user_name, pin):
     bills = [200, 250, 230, 430, 480, 520, 100, 150, 50, 400, 500, 450, 550, 600, 560, 650, 300, 320, 350,
              1050, 1500, 1120]
     bill = random.choice(bills)
-    print(f"\n\tYour outstanding bill amount for electricity is ${bill}.")
+    print(f"\n\tYour outstanding bill amount for electricity is ${bill:,}.")
     confirm = input(f"\n\tDo you want to proceed with the payment [Y/N] ?:  ").upper()
 
     if confirm == 'Y':
 
+        charges = 0.015 * bill
+        amount_paid = bill + charges
+
         # Check withdrawable amount
-        can_withdraw, message = check_withdrawable_amount(user_name, pin, bill)
+        can_withdraw, message = check_withdrawable_amount(user_name, pin, amount_paid)
         if not can_withdraw:
             txf.display_error(message)
             return
 
-        charges = 0.015 * bill
-        amount_paid = bill + charges
-
         acct_type = 'Admin'
         select_admin_acc_bal = "SELECT acct_bal FROM bank_tbl WHERE acct_type = %s"
         my_cur.execute(select_admin_acc_bal, (acct_type,))
-        current_balance = my_cur.fetchone()
+        current_balance = my_cur.fetchone()[0]
         if current_balance:
-            current_balance = current_balance[0]
-            current_balance = current_balance
             new_balance = current_balance + charges
             if new_balance >= 0:
                 # Update the user's account balance in the database with the new balance
@@ -96,9 +94,9 @@ def pay_electricity_bill(user_name, pin):
                     my_cur.execute(update_acct_bal, (new_balance, user_name, pin))
                     conn_obj.commit()
 
-                    print(f"\n\t\033[Payment successful. \n\tYou have paid \033[32m${bill}\033[0m for electricity (\033[31m-${charges}\033[0m for charges). Your new balance is \033[32m${new_balance}\033[0m\033[0m")
+                    print(f"\n\t\033[1mPayment successful. \n\tYou have paid \033[32m${bill:,}\033[0m for electricity (\033[31m-${charges}\033[0m for charges). Your new balance is \033[32m${new_balance:,}\033[0m")
                     token = gen_token()
-                    print(f'Your token: {token}')
+                    print(f'Your token: {token}\033[0m')
 
                     select_withdrawal_acct_num = "SELECT acct_num FROM bank_tbl where user_name = %s AND PIN = %s"
                     my_cur.execute(select_withdrawal_acct_num, (user_name, pin))
@@ -108,7 +106,7 @@ def pay_electricity_bill(user_name, pin):
                     transaction_id = gen_transaction_id()
                     with open('bill_payments.txt', 'a') as bill_payments:
                         bill_payments.write(
-                            f'Acct: ****{withdrawal_acct[-4:]}\nDR:${amount_paid}  (-${charges} charges)\nTRANSACTION ID:{transaction_id}\nDesc:PAYMENT OF {bill} FOR ELECTRICITY:\nDT:{datetime.now()}\n Dial *389# to access bank services\n\n')
+                            f'Acct: ****{withdrawal_acct[-4:]}\nDR:${amount_paid:,}  (-${charges} charges)\nTRANSACTION ID:{transaction_id}\nDesc:PAYMENT OF {bill:,} FOR ELECTRICITY:\nDT:{datetime.now()}\n Dial *389# to access bank services\n\n')
 
                     trans_amount = bill
                     sender_acct_num = withdrawal_acct
@@ -118,7 +116,7 @@ def pay_electricity_bill(user_name, pin):
                     reciever_user_name = 'EKO ELECT'
 
                     trans_date = datetime.now()
-                    trans_desc = f'PAYMENT OF ${bill} FOR ELECTRICITY'
+                    trans_desc = f'PAYMENT OF ${bill:,} FOR ELECTRICITY'
                     trans_status = 'Successful'
 
                     sender_acct_type_query = "SELECT acct_type FROM bank_tbl WHERE user_name = %s"

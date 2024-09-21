@@ -47,5 +47,3 @@ def bills_payment_menu():
         loggedinmenu.logged_in_menu()
     else:
         print('Invalid Input...')
-
-

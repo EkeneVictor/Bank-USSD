@@ -6,6 +6,8 @@ import string
 import random
 from datetime import datetime
 import config
+from create_acct import check_withdrawable_amount
+
 
 # connecting to the mysql server
 conn_obj = sql.connect(
@@ -61,6 +63,12 @@ def mobile_top_up(user_name, pin):
         amount = float(input('Enter the top-up amount: '))
         charges = 0.015 * amount
         amount_paid = amount + charges
+
+        # Check withdrawable amount
+        can_withdraw, message = check_withdrawable_amount(user_name, pin, amount_paid)
+        if not can_withdraw:
+            txf.display_error(message)
+            return
 
         acct_type = 'Admin'
         select_admin_acc_bal = "SELECT acct_bal FROM bank_tbl WHERE acct_type = %s"

@@ -67,7 +67,7 @@ def withdraw_money(user_name, pin):
                         time.sleep(2)
 
                         print(
-                            f"\n\t\033[1mWithdraw successful. You have withdrawn \033[32m${amount}\033[0m (\033[31m-${charges}\033[0m for charges). Your new balance is \033[32m${new_balance}\033[0m\033[0m")
+                            f"\n\t\033[1mWithdraw successful. You have withdrawn \033[32m${amount:,}\033[0m (\033[31m-${charges}\033[0m for charges). Your new balance is \033[32m${new_balance}\033[0m\033[0m")
 
                         select_withdrawal_acct_num = "SELECT acct_num FROM bank_tbl where user_name = %s AND PIN = %s"
                         my_cur.execute(select_withdrawal_acct_num, (user_name, pin))
@@ -89,7 +89,7 @@ def withdraw_money(user_name, pin):
                         transaction_id = gen_transaction_id()
                         with open('withdraw__statements.txt', 'a') as withdraw_statements:
                             withdraw_statements.write(
-                                f'Acct: ****{withdrawal_acct[-4:]}\nWTH:${amount_wtd}\nTRANSACTION ID:{transaction_id}\nDesc:WITHDRAWAL OF {amount_wtd}:\nDT:{datetime.now()}\n Dial *389# to access bank services\n\n')
+                                f'Acct: ****{withdrawal_acct[-4:]}\nWTH:${amount_wtd:,}\nTRANSACTION ID:{transaction_id}\nDesc:WITHDRAWAL OF {amount_wtd:,}:\nDT:{datetime.now()}\n Dial *389# to access bank services\n\n')
 
                         trans_amount = amount_wtd
                         sender_acct_num = withdrawal_acct

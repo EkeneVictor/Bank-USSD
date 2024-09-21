@@ -4,7 +4,7 @@ import textformatting as txf
 import string
 import random
 from datetime import datetime
-from create_acct import handle_transaction, check_restrictions
+from create_acct import check_restrictions, check_withdrawable_amount
 
 # connecting to the mysql server
 conn_obj = sql.connect(
@@ -87,7 +87,7 @@ def deposit_money(user_name, pin):
                     time.sleep(2)
 
                     print(
-                        f"\n\033[1mDeposit successful\033[0m.\n\t\033[1m Your new balance is: \033[32m${new_balance}\033[0m. (\033[31m-${charges}\033[0m for charges)\033[0m")
+                        f"\n\033[1mDeposit successful\033[0m.\n\t\033[1m Your new balance is: \033[32m${new_balance:,}\033[0m. (\033[31m-${charges}\033[0m for charges)\033[0m")
 
                     # Retrieve the user's account number
                     select_deposit_acct_num = "SELECT acct_num FROM bank_tbl where user_name = %s AND PIN = %s"
@@ -105,7 +105,7 @@ def deposit_money(user_name, pin):
                     # Log the deposit statement to a file
                     with open('deposit_statements.txt', 'a') as deps:
                         deps.write(
-                            f'Acct: ****{deposit_acct[-4:]}\nDEP:${amount_dep}\nTRANSACTION ID:{transaction_id}\nDesc:DEPOSIT OF {amount_dep}:\nDT:{datetime.now()}\n Dial *389# to access bank services\n\n')
+                            f'Acct: ****{deposit_acct[-4:]}\nDEP:${amount_dep:,}\nTRANSACTION ID:{transaction_id}\nDesc:DEPOSIT OF {amount_dep}:\nDT:{datetime.now()}\n Dial *389# to access bank services\n\n')
 
                     trans_amount = amount_dep
                     sender_acct_num = 'DEPOSIT'
@@ -130,9 +130,6 @@ def deposit_money(user_name, pin):
                     my_cur.execute(update_trans_table, (
                         transaction_id, trans_amount, sender_acct_num, reciever_acct_num, sender_user_name,
                         reciever_user_name, trans_date, trans_desc, sender_acct_type, reciever_acct_type, trans_status))
-
-                    # Handle the transaction (e.g., apply any business logic or restrictions)
-                    handle_transaction(acct_type, 'deposit', amount)
 
                     # Commit the transaction to the database
                     conn_obj.commit()
